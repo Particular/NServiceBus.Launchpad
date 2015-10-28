@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Progress Demo";
+    Layout = null;
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+
+<script>
+    var ng = angular || null;
+
+    ng.module('nsbBootstrap', []);
+
+    var controller = function ($scope, $http, $q) {
+
+        var getBootstrapBuilder = function () {
+
+            var deferred = $q.defer();
+
+            $http.get('/Home/BootstrapBuilder')
+                .then(function success(response) {
+                    deferred.resolve(response.data);
+                },
+                function failure(response) {
+                    deferred.reject(response);
+                });
+
+            return deferred.promise;
+        };
+
+        var triggerBootstrapping = function (model) {
+
+            var deferred = $q.defer();
+
+            $http.post('/Home/Bootstrap', { model: model })
+                .then(function success(response) {
+                    deferred.resolve(response.data);
+                },
+                function failure(response) {
+                    deferred.reject(response);
+                });
+
+            return deferred.promise;
+        };
+
+        var initialize = function() {
+
+            getBootstrapBuilder().then(function(builderModel) {
+                $scope.builderModel = builderModel;
+            });
+        };
+
+        $scope.bootstrap = function() {
+
+            var model = {
+                Version: $scope.selectedVersion.NServiceBusVersion,
+                Serializer: $scope.selectedSerializer,
+                Persistence: $scope.selectedPersistence,
+                Transport: $scope.selectedTransport
+            };
+
+            triggerBootstrapping(model).then(function(configuration) {
+                $scope.configuration = configuration;
+            });
+
+        };
+
+        initialize();
+    };
+
+    ng.module('nsbBootstrap').controller('bootstrapBuilder', ['$scope', '$http', '$q', controller]);
+
+</script>
+
+<div ng-app="nsbBootstrap" ng-controller="bootstrapBuilder">
+
+    <select
+        ng-options="version as 'Version ' + version.NServiceBusVersion for version in builderModel.AvailableVersions"
+        ng-model="selectedVersion">
+        <option value="">--Select version--</option>
+    </select>
+
+    <div ng-show="selectedVersion" style="margin: 7px; padding: 5px; border: thin black solid;">
+
+        <h3>Version {{selectedVersion.NServiceBusVersion}} Configuration Options</h3>
+
+        <div>
+            <select ng-options="persistence as persistence.Name for persistence in selectedVersion.AvailablePersistence"
+                    ng-model="selectedPersistence">
+                <option value="">--Select persistence--</option>
+            </select>
+        </div>
+
+        <div>
+            <select ng-options="serializer as serializer.Name for serializer in selectedVersion.AvailableSerializers"
+                    ng-model="selectedSerializer">
+                <option value="">--Select serializer--</option>
+            </select>
+        </div>
+
+        <div>
+            <select ng-options="transport as transport.Name for transport in selectedVersion.AvailableTransports"
+                    ng-model="selectedTransport">
+                <option value="">--Select transport--</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div ng-show="configuration">
+        <h4>Here is your bootstrapped configuration, hand delivered</h4>
+    </div>
+
+    <div>
+        <button ng-click="bootstrap()">Bootstrap me</button>
+    </div>
+
+</div>
