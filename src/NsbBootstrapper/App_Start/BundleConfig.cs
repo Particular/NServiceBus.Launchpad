@@ -19,13 +19,21 @@ namespace NsbBootstrapper
             //bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
             //            "~/Scripts/modernizr-*"));
 
-            //bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-            //          "~/Scripts/bootstrap.js",
-            //          "~/Scripts/respond.js"));
+            bundles.Add(new ScriptBundle("~/bundles/libraries").Include(
+                      "~/Scripts/bootstrap.js",
+                      "~/Scripts/angular.js"
+                      ));
 
-            //bundles.Add(new StyleBundle("~/Content/css").Include(
-            //          "~/Content/bootstrap.css",
-            //          "~/Content/site.css"));
+            bundles.Add(new ScriptBundle("~/bundles/javascript").Include(
+                      "~/Angular/*.js",
+                      "~/Angular/Services/*.js",
+                      "~/Angular/Controllers/*.js",
+                      "~/Angular/Directives/*.js"
+                      ));
+
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                      "~/Content/bootstrap.css",
+                      "~/Content/site.css"));
         }
     }
 }
