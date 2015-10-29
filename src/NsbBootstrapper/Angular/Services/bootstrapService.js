@@ -103,6 +103,7 @@
             }
 
             var nugetInstalls = [
+                'NServiceBus',
                 'NServiceBus.Host'
             ];
 
