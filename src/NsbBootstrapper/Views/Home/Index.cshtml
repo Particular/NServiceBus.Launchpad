@@ -3,47 +3,108 @@
     ViewBag.Title = "NsbBootstrap";
 }
 
-<div ng-app="nsbBootstrap" ng-controller="bootstrapWizard">
+<style>
+    .wizard-body {
+        width: 900px;
+        margin: auto;
+    }
 
-    <select
-        ng-options="version as 'Version ' + version.NServiceBusVersion for version in builderModel.AvailableVersions"
-        ng-model="selectedVersion">
-        <option value="">--Select version--</option>
-    </select>
+     select {
+         padding: 4px;
+     }
 
-    <div ng-show="selectedVersion" style="margin: 7px; padding: 5px; border: thin black solid;">
+    div.configuration-selection {
+        margin: 5px;
+        padding: 10px;
+        border: thin black solid;
+        -ms-border-radius: 5px;
+        border-radius: 5px;
+    }
 
-        <h3>Version {{selectedVersion.NServiceBusVersion}} Configuration Options</h3>
+    div.configuration-selection .btn-success {
+        margin-top: 15px;
+        width: 100%;
+    }
 
-        <div>
-            <select ng-options="persistence as persistence.Name for persistence in selectedVersion.AvailablePersistence"
-                    ng-model="selectedPersistence">
-                <option value="">--Select persistence--</option>
-            </select>
+    div.configuration-display {
+        margin: 5px;
+        padding: 10px;
+        border: thin black solid;
+        -ms-border-radius: 5px;
+        border-radius: 5px;
+        background-color: #00ffff;
+    }
+
+    .field {
+        margin-bottom: 5px;
+    }
+
+    .field > label {
+        width: 140px;       
+    }
+
+    .wide-text-field input {
+        width: 400px;
+    }
+</style>
+
+<div ng-app="nsbBootstrap" ng-controller="bootstrapWizard" class="wizard-body">
+
+    <h1>NServiceBus Bootstrapper</h1>
+
+    <ol>
+        <li>Select your version number </li>
+        <li>Select your specific configuration from the available items for that version </li>
+        <li>Click 'Bootstrap Me' </li>
+        <li>Copy and paste the bus configuration into your project </li>
+        <li>Copy and paste the NuGet commands into your Package Manager Console </li>
+    </ol>
+
+    <h4 class="dropdown-field">
+        <label>Select version: </label>
+        <select ng-options="version as 'Version ' + version.NServiceBusVersion for version in builderModel.AvailableVersions"
+                ng-model="selectedVersion"
+                ng-change="setVersionDefaults()">
+            <option value="">--Select version--</option>
+        </select>
+    </h4>
+
+    <div ng-show="selectedVersion" class="configuration-selection">
+
+        <h3>Version {{selectedVersion.NServiceBusVersion}} Options</h3>
+
+        <config-dropdown attr-items="selectedVersion.AvailablePersistence" attr-label="persistence" attr-model="selectedPersistence"></config-dropdown>
+        <config-dropdown attr-items="selectedVersion.AvailableSerializers" attr-label="serializer" attr-model="selectedSerializer"></config-dropdown>
+        <config-dropdown attr-items="selectedVersion.AvailableTransports" attr-label="transport" attr-model="selectedTransport"></config-dropdown>
+
+        <div class="field wide-text-field">
+            <label>Name your endpoint: </label>
+            <input type="text" ng-model="endpointName" placeholder="Endpoint Name"/>
         </div>
 
-        <div>
-            <select ng-options="serializer as serializer.Name for serializer in selectedVersion.AvailableSerializers"
-                    ng-model="selectedSerializer">
-                <option value="">--Select serializer--</option>
-            </select>
-        </div>
-
-        <div>
-            <select ng-options="transport as transport.Name for transport in selectedVersion.AvailableTransports"
-                    ng-model="selectedTransport">
-                <option value="">--Select transport--</option>
-            </select>
-        </div>
-
+        <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
     </div>
 
-    <div ng-show="configuration">
-        <h4>Here is your bootstrapped configuration, hand delivered</h4>
-    </div>
+    <div ng-show="bootstrapResult" class="configuration-display">
+        <h4>Here is your bootstrapped configuration <span class="glyphicon glyphicon-hand-down"></span></h4>
 
-    <div>
-        <button ng-click="bootstrap()">Bootstrap me</button>
+        <div class="configuration-text">
+            <h3>Bus Configuration</h3>
+
+            <code ng-repeat-start="line in bootstrapResult.Configuration">
+                {{line}}
+            </code>
+            <br ng-if="!$last" ng-repeat-end />
+        </div>
+
+        <div class="configuration-text">
+            <h3>NuGet Installer Commands</h3>
+
+            <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
+                Install-Package {{package}}
+            </code>
+            <br ng-if="!$last" ng-repeat-end/>
+        </div>
     </div>
 
 </div>

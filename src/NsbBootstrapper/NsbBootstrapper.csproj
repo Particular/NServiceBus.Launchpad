@@ -174,7 +174,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Angular\Directives\configItemDropdown.js" />
+    <Content Include="Angular\Directives\configDropdown.js" />
+    <Content Include="Angular\Directives\Templates\configDropdown.html" />
     <Content Include="Angular\Services\bootstrapService.js" />
     <Content Include="Angular\Controllers\bootstrapWizard.js" />
     <Content Include="Angular\nsbBootstrap.js" />

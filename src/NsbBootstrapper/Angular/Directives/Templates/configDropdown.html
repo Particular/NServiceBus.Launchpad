@@ -1,0 +1,7 @@
+<div class="field">
+    <label>Select {{label}}:</label>
+    <select ng-options="item as item.Name for item in configurationItems"
+            ng-model="selectedItem">
+        <option value="">--Select {{label}}--</option>
+    </select>
+</div>
