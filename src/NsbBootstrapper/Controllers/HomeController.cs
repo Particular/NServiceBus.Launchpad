@@ -60,8 +60,10 @@ namespace NsbBootstrapper.Controllers
         {
             version.AvailablePersistence =
                 MakeConfigurationList(
+                    Persistence.None,
+                    Persistence.Msmq,
                     Persistence.NHibernate,
-                    Persistence.RavenDb,
+                    Persistence.RavenDB,
                     Persistence.AzureStorage);
 
             version.AvailableSerializers =
@@ -72,10 +74,10 @@ namespace NsbBootstrapper.Controllers
 
             version.AvailableTransports =
                 MakeConfigurationList(
-                    Transport.Azure,
+                    Transport.AzureServiceBus,
                     Transport.Msmq,
-                    Transport.RabbitMq,
-                    Transport.Sql);
+                    Transport.RabbitMQ,
+                    Transport.SqlServer);
         }
     }
 }

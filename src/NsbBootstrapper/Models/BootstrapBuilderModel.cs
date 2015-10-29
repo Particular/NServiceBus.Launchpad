@@ -15,15 +15,16 @@ namespace NsbBootstrapper.Models
     public enum Transport
     {
         Msmq,
-        Sql,
-        RabbitMq,
-        Azure,
+        SqlServer,
+        RabbitMQ,
+        AzureServiceBus,
     }
     public enum Persistence
     {
+        None,
         InMemory,
         NHibernate,
-        RavenDb,
+        RavenDB,
         AzureStorage,
         Msmq
     }

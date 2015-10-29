@@ -73,14 +73,14 @@
 
         <h3>Version {{selectedVersion.NServiceBusVersion}} Options</h3>
 
-        <config-dropdown attr-items="selectedVersion.AvailablePersistence" attr-label="persistence" attr-model="selectedPersistence"></config-dropdown>
-        <config-dropdown attr-items="selectedVersion.AvailableSerializers" attr-label="serializer" attr-model="selectedSerializer"></config-dropdown>
-        <config-dropdown attr-items="selectedVersion.AvailableTransports" attr-label="transport" attr-model="selectedTransport"></config-dropdown>
-
         <div class="field wide-text-field">
             <label>Name your endpoint: </label>
-            <input type="text" ng-model="endpointName" placeholder="Endpoint Name"/>
+            <input type="text" ng-model="endpointName" placeholder="Endpoint Name" />
         </div>
+
+        <config-dropdown attr-items="selectedVersion.AvailableSerializers" attr-label="serializer" attr-model="selectedSerializer"></config-dropdown>
+        <config-dropdown attr-items="selectedVersion.AvailableTransports" attr-label="transport" attr-model="selectedTransport"></config-dropdown>
+        <config-dropdown attr-items="selectedVersion.AvailablePersistence" attr-label="persistence" attr-model="selectedPersistence"></config-dropdown>
 
         <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
     </div>

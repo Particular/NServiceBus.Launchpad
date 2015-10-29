@@ -5,7 +5,8 @@
         var busConfigurationBuilder = function () {
 
             var builder = {
-                configString: ''
+                configString: '',
+
             };
 
             builder.addLine = function(line) {
@@ -13,11 +14,6 @@
             };
 
             builder.addLine('var busConfiguration = new BusConfiguration()');
-            builder.addLine('busConfiguration.EndpointName("{{EndpointName}}")');
-            builder.addLine('busConfiguration.UseSerialization<{{Serializer}}>()');
-            builder.addLine('busConfiguration.UsePersistence<{{Persistence}}>()');
-            builder.addLine('busConfiguration.UseTransport<{{Transport}}>()');
-            builder.addLine('busConfiguration.EnableInstallers()');
 
             var buildValue = function (key, value) {
                 builder.configString =
@@ -26,22 +22,27 @@
             }
 
             builder.setEndpointName = function (value) {
+                builder.addLine('busConfiguration.EndpointName("{{EndpointName}}")');
                 return buildValue('EndpointName', value);
             };
 
             builder.setPersistence = function (configItem) {
-                return buildValue('Persistence', configItem.Name);
+                builder.addLine('busConfiguration.UsePersistence<{{Persistence}}>()');
+                return buildValue('Persistence', configItem.Name + 'Persistence');
             };
 
             builder.setSerializer = function (configItem) {
-                return buildValue('Serializer', configItem.Name);
+                builder.addLine('busConfiguration.UseSerialization<{{Serializer}}>()');
+                return buildValue('Serializer', configItem.Name + 'Serializer');
             };
 
             builder.setTransport = function (configItem) {
-                return buildValue('Transport', configItem.Name);
+                builder.addLine('busConfiguration.UseTransport<{{Transport}}>()');
+                return buildValue('Transport', configItem.Name + 'Transport');
             };
 
             builder.build = function() {
+                builder.addLine('busConfiguration.EnableInstallers()');
                 var lines = builder.configString.split('{{newLine}}');
                 lines.splice(-1, 1);
                 return lines;
@@ -52,14 +53,14 @@
 
         var nuGetDependencyDictionary = {
             Persistence: {
-                NHibernate: ['NHibernate.Client'],
-                RavenDb: ['RavenDb.Client'],
-                AzureStorage: ['AzureStorage.Adapter']
+                NHibernate: ['NServiceBus.NHibernate'],
+                RavenDB: ['NServiceBus.RavenDB'],
+                AzureStorage: ['NServiceBus.Azure']
             },
             Serializer: {},
             Transport: {
-                RabbitMQ: ['RabbitMQ.Client'],
-                Azure: ['Azure.Client']
+                RabbitMQ: ['NServiceBus.RabbitMQ'],
+                AzureServiceBus: ['NServiceBus.Azure.Transports.WindowsAzureServiceBus']
             },
         };
 
@@ -91,13 +92,15 @@
             //        deferred.reject(response);
             //    });
 
-            var busConfig =
+            var busBuilder =
                 busConfigurationBuilder()
                     .setEndpointName(model.EndpointName)
-                    .setPersistence(model.Persistence)
                     .setTransport(model.Transport)
-                    .setSerializer(model.Serializer)
-                    .build();
+                    .setSerializer(model.Serializer);
+
+            if (model.Persistence.Name !== 'None') {
+                busBuilder.setPersistence(model.Persistence);
+            }
 
             var nugetInstalls = [
                 'NServiceBus.Host'
@@ -118,7 +121,7 @@
             nugetInstalls.addDependencies(nuGetDependencyDictionary.Transport[model.Transport.Name]);
 
             deferred.resolve({
-                Configuration: busConfig,
+                Configuration: busBuilder.build(),
                 NuGetDependencies: nugetInstalls
             });
 
