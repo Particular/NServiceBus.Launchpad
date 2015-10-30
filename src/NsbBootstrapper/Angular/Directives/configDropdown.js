@@ -8,9 +8,11 @@
             scope: {
                 label: '@attrLabel',
                 selectedItem: '=attrModel',
-                configurationItems: '=attrItems'
+                configurationItems: '=attrItems',
+                onChange: '&?attrChange'
             },
-            link: function(scope, element, attrs) {
+            link: function (scope, element, attrs) {
+                scope.onChange = scope.onChange || function() {};
             }
         };
     });

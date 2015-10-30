@@ -1,0 +1,13 @@
+<div ng-show="documentationItems">
+    <h3>
+        {{title}}
+        <button class="btn btn-primary btn-xs" ng-click="hideDocoList = !hideDocoList">&nbsp;{{hideDocoList ? '+' : '-'}}&nbsp;</button>
+    </h3>
+    <div ng-hide="hideDocoList">
+        <div ng-repeat="item in documentationItems"
+             style="padding: 2px; margin-bottom: 2px; border: thin solid black; border-radius: 3px;">
+            <a ng-href="item.url" target="_blank"><b>{{item.title}}</b> - ({{item.grouping}}) {{item.description}}</a>
+        </div>
+    </div>
+
+</div>
