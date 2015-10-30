@@ -8,12 +8,11 @@
         width: 1100px;
         margin: auto;
     }
-    
+
     .right-pane {
         width: 400px;
         max-height: 850px;
-        min-height: 200px;
-        overflow: scroll;
+        overflow-y: scroll;
         float: right;
     }
 
@@ -22,9 +21,9 @@
         float: left;
     }
 
-     select {
-         padding: 4px;
-     }
+    select {
+        padding: 4px;
+    }
 
     div.configuration-selection {
         margin: 5px;
@@ -34,10 +33,10 @@
         border-radius: 5px;
     }
 
-    div.configuration-selection .btn-success {
-        margin-top: 15px;
-        width: 100%;
-    }
+        div.configuration-selection .btn-success {
+            margin-top: 15px;
+            width: 100%;
+        }
 
     div.configuration-display {
         margin: 5px;
@@ -52,9 +51,9 @@
         margin-bottom: 5px;
     }
 
-    .field > label {
-        width: 140px;       
-    }
+        .field > label {
+            width: 140px;
+        }
 
     .wide-text-field input {
         width: 400px;
@@ -89,7 +88,7 @@
 
             <div class="field wide-text-field">
                 <label>Name your endpoint: </label>
-                <input type="text" ng-model="endpointName" placeholder="Endpoint Name"/>
+                <input type="text" ng-model="endpointName" placeholder="Endpoint Name" />
             </div>
 
             <config-dropdown attr-items="selectedVersion.AvailableSerializers" attr-label="serializer" attr-model="selectedSerializer"></config-dropdown>
@@ -109,7 +108,7 @@
                 <code ng-repeat-start="line in bootstrapResult.Configuration">
                     {{line}}
                 </code>
-                <br ng-if="!$last" ng-repeat-end/>
+                <br ng-if="!$last" ng-repeat-end />
             </div>
 
             <div class="configuration-text">
@@ -118,16 +117,15 @@
                 <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
                     Install-Package {{package}}
                 </code>
-                <br ng-if="!$last" ng-repeat-end/>
+                <br ng-if="!$last" ng-repeat-end />
             </div>
         </div>
     </div>
 
     <div class="right-pane">
-        <div class="documentation-help-box">
-            <documentation-links attr-title="selectedSerializer.Name + 'Serializer'" attr-items="serializationDocumentation"></documentation-links>
-            <documentation-links attr-title="selectedTransport.Name + 'Transport'" attr-items="transportDocumentation"></documentation-links>
-            <documentation-links attr-title="selectedPersistence.Name + 'Persistence'" attr-items="persistenceDocumentation"></documentation-links>
-        </div>
+        <h2>Documentation Links</h2>
+        <documentation-links attr-title="selectedSerializer.Name + 'Serializer'" attr-items="serializationDocumentation"></documentation-links>
+        <documentation-links attr-title="selectedTransport.Name + 'Transport'" attr-items="transportDocumentation"></documentation-links>
+        <documentation-links attr-title="selectedPersistence.Name + 'Persistence'" attr-items="persistenceDocumentation"></documentation-links>
     </div>
 </div>

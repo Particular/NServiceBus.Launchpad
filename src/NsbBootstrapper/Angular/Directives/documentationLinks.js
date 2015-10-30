@@ -4,11 +4,13 @@
 
         return {
             restrict: 'E',
-            replace: true,
             templateUrl: '/Angular/Directives/Templates/documentationLinks.html',
             scope: {
                 title: '=attrTitle',
                 documentationItems: '=attrItems'
+            },
+            link: function(scope) {
+                scope.hideList = false;
             }
         };
     });
