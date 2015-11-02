@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using NsbBootstrapper.Models;
+using NServiceBus.Bootstrapper;
 
 namespace NsbBootstrapper.Controllers
 {
@@ -68,23 +68,23 @@ namespace NsbBootstrapper.Controllers
         [HttpGet]
         public JsonResult BootstrapBuilder()
         {
-            var version5 = new VersionBuilderModel()
+            var version5 = new VersionConfigurationOptions()
             {
                 NServiceBusVersion = NServiceBusVersion.Five,
             };
 
             AddDefaultOptions(version5);
 
-            var version6 = new VersionBuilderModel()
+            var version6 = new VersionConfigurationOptions()
             {
                 NServiceBusVersion = NServiceBusVersion.Six,
             };
 
             AddDefaultOptions(version6);
 
-            var model = new BootstrapBuilderModel()
+            var model = new BootstrapperOptions()
             {
-                AvailableVersions = new List<VersionBuilderModel>()
+                AvailableVersions = new List<VersionConfigurationOptions>()
                 {
                     version5,
                     version6
@@ -94,7 +94,7 @@ namespace NsbBootstrapper.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        private void AddDefaultOptions(VersionBuilderModel version)
+        private void AddDefaultOptions(VersionConfigurationOptions version)
         {
             version.AvailablePersistence =
                 MakeConfigurationList(

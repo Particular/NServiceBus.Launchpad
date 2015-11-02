@@ -45,10 +45,19 @@
             var deferred = $q.defer();
             var encodedSearchTerms = $window.encodeURIComponent(searchTerms);
 
+            deferred.reject();
+            return deferred.promise;
+
             $http.get('/Home/Documentation?q=' + encodedSearchTerms)
                 .then(function success(response) {
-                    var markup = scrapeDocumentationLinks(response.data);
-                    deferred.resolve(markup);
+                    var documentationItems = scrapeDocumentationLinks(response.data);
+
+                    if (!documentationItems || documentationItems.length === 0) {
+                        deferred.reject('Documentation items are not available at the moment.');
+                        return;
+                    }
+
+                    deferred.resolve(documentationItems);
                     searchCache[searchTerms] = deferred;
                 },
                 function failure(response) {
