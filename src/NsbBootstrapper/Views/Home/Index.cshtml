@@ -4,9 +4,19 @@
 }
 
 <style>
+    div.logo {
+        padding: 15px;
+        margin: 10px;
+        background-color: #bbb;
+        display: inline-block;
+        text-align: center;
+        border: medium solid black;
+    }
+
     .wizard-body {
         width: 85%;
         margin: auto;
+        margin-bottom: 25px;
     }
 
     select {
@@ -23,6 +33,11 @@
         border: thin solid black;
         min-height: 80px;
         border-bottom: none;
+    }
+
+    .step-section h2 {
+        border-bottom: medium solid black;
+        padding-bottom: 5px;
     }
 
     .step-section > .wizard-configuration-section:first-of-type {
@@ -49,7 +64,10 @@
 
 <div ng-app="nsbBootstrap" ng-controller="bootstrapWizard" class="wizard-body">
 
-    <h1>NServiceBus Bootstrapper</h1>
+    <div class="logo">
+        <h1>NServiceBus Launchpad</h1>
+        <p>The place where we write the boring code for you</p>
+    </div>
 
     <ol>
         <li>Select your version number </li>
@@ -64,6 +82,8 @@
         <div class="step-section">
 
             <h2>Step 1:</h2>
+
+            <p>Fill in your configuration details. </p>
 
             <div class="wizard-configuration-section">
                 <div class="left-pane">
@@ -102,13 +122,16 @@
 
             <h2>Step 2:</h2>
 
-            <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
+            <p>Generate the code... </p>
 
+            <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
         </div>
 
-        <div class="step-section" ng-show="bootstrapResult" >
+        <div class="step-section" ng-show="bootstrapResult">
 
             <h2>Step 3:</h2>
+
+            <p>Copy paste the generated code into your solution. </p>
 
             <div class="configuration-display">
                 <h4>Here is your bootstrapped configuration <span class="glyphicon glyphicon-hand-down"></span></h4>
@@ -119,7 +142,7 @@
                     <code ng-repeat-start="line in bootstrapResult.Configuration">
                         {{line}}
                     </code>
-                    <br ng-if="!$last" ng-repeat-end/>
+                    <br ng-if="!$last" ng-repeat-end />
                 </div>
 
                 <div class="configuration-text">
@@ -128,12 +151,12 @@
                     <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
                         Install-Package {{package}}
                     </code>
-                    <br ng-if="!$last" ng-repeat-end/>
+                    <br ng-if="!$last" ng-repeat-end />
                 </div>
             </div>
         </div>
 
-        </div>
+    </div>
 
     @*<div class="right-pane">
             <h2>Documentation Links</h2>
