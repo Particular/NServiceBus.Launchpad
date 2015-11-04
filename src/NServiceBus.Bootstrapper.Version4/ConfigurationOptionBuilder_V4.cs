@@ -9,22 +9,22 @@
                 NServiceBusVersion = NServiceBusVersion.Four,
             };
 
-            version.AvailablePersistence =
-                MakeConfigurationList(
+            version.PersistenceSection =
+                MakeConfigurationSection(
                     Persistence.None,
                     Persistence.Msmq,
                     Persistence.NHibernate,
                     Persistence.RavenDB,
                     Persistence.AzureStorage);
 
-            version.AvailableSerializers =
-                MakeConfigurationList(
+            version.SerializerSection =
+                MakeConfigurationSection(
                     Serializer.Json,
                     Serializer.Xml,
                     Serializer.Binary);
 
-            version.AvailableTransports =
-                MakeConfigurationList(
+            version.TransportSection =
+                MakeConfigurationSection(
                     Transport.AzureServiceBus,
                     Transport.Msmq,
                     Transport.RabbitMQ,

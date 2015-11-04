@@ -174,9 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Angular\Directives\documentationLinks.js" />
-    <Content Include="Angular\Directives\configDropdown.js" />
+    <Content Include="Angular\Directives\configSection.js" />
     <Content Include="Angular\Directives\Templates\documentationLinks.html" />
-    <Content Include="Angular\Directives\Templates\configDropdown.html" />
+    <Content Include="Angular\Directives\Templates\configSection.html" />
     <Content Include="Angular\Services\educationService.js" />
     <Content Include="Angular\Services\bootstrapService.js" />
     <Content Include="Angular\Controllers\bootstrapWizard.js" />
@@ -238,6 +238,14 @@
     <ProjectReference Include="..\NServiceBus.Bootstrapper.Shared\NServiceBus.Bootstrapper.Shared.csproj">
       <Project>{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}</Project>
       <Name>NServiceBus.Bootstrapper.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NServiceBus.Bootstrapper.Version5\NServiceBus.Bootstrapper.Version5.csproj">
+      <Project>{946FC844-21C0-466B-B146-1780C70AD27A}</Project>
+      <Name>NServiceBus.Bootstrapper.Version5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NServiceBus.Bootstrapper.Version6\NServiceBus.Bootstrapper.Version6.csproj">
+      <Project>{46544CFC-16F2-45DF-BBC5-A833E90A57E2}</Project>
+      <Name>NServiceBus.Bootstrapper.Version6</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

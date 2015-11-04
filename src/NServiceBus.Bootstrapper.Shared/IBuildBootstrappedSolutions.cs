@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public interface IBuildBootstrappedSolutions
     {
@@ -49,6 +50,23 @@
             List<string> transport = GetDependencyEntry(endpointConfiguration.Transport),
                 serializer = GetDependencyEntry(endpointConfiguration.Serializer),
                 persistence = GetDependencyEntry(endpointConfiguration.Persistence);
+
+            AddUniqueDependencies(transport, dependencies);
+            AddUniqueDependencies(serializer, dependencies);
+            AddUniqueDependencies(persistence, dependencies);
+
+            return dependencies.ToList();
+        }
+
+        static void AddUniqueDependencies(List<string> dependenciesToAdd, HashSet<string> dependencies)
+        {
+            foreach (var dependency in dependenciesToAdd)
+            {
+                if (!dependencies.Contains(dependency))
+                {
+                    dependencies.Add(dependency);
+                }
+            }
         }
     }
 }

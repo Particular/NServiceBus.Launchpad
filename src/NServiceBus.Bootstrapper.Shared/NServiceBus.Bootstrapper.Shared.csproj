@@ -43,6 +43,7 @@
     <Compile Include="BootstrappedSolution.cs" />
     <Compile Include="BootstrapperOptions.cs" />
     <Compile Include="ConfigurationItem.cs" />
+    <Compile Include="ConfigurationSection.cs" />
     <Compile Include="EndpointConfiguration.cs" />
     <Compile Include="AbstractVersionOptionBuilder.cs" />
     <Compile Include="IBuildBootstrappedSolutions.cs" />

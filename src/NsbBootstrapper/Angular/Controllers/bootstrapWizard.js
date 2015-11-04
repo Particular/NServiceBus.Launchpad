@@ -18,22 +18,26 @@
             if (!$scope.selectedVersion)
                 return;
 
-            $scope.selectedSerializer =
-                $scope.selectedVersion.AvailableSerializers[0];
-            $scope.selectedPersistence =
-                $scope.selectedVersion.AvailablePersistence[0];
-            $scope.selectedTransport =
-                $scope.selectedVersion.AvailableTransports[0];
+            var setDefault = function (key) {
+                $scope.selectedVersion[key].selectedItem =
+                    $scope.selectedVersion[key].Items[0];
+            };
+
+            setDefault('TransportSection');
+            setDefault('SerializerSection');
+            setDefault('PersistenceSection');
         };
 
         $scope.bootstrap = function () {
 
+            var version = $scope.selectedVersion;
+
             var model = {
-                Version: $scope.selectedVersion.NServiceBusVersion,
+                Version: version.NServiceBusVersion,
                 EndpointName: $scope.endpointName,
-                Serializer: $scope.selectedSerializer,
-                Persistence: $scope.selectedPersistence,
-                Transport: $scope.selectedTransport
+                Serializer: version.SerializerSection.selectedItem,
+                Persistence: version.PersistenceSection.selectedItem,
+                Transport: version.TransportSection.selectedItem,
             };
 
             bootstrapService.triggerBootstrapping(model)
@@ -42,50 +46,50 @@
                 });
         };
 
-        $scope.$watch('selectedPersistence', function () {
+        //$scope.$watch('selectedVersion.PersistenceSection.selectedItem', function () {
 
-            $scope.persistenceDocumentation = null;
+        //    $scope.persistenceDocumentation = null;
 
-            if (!$scope.selectedPersistence || $scope.selectedPersistence.Name === 'None') {
-                return;
-            }
+        //    if (!$scope.selectedPersistence || $scope.selectedPersistence.Name === 'None') {
+        //        return;
+        //    }
 
-            educationService
-                .getDocumentationMarkup($scope.selectedPersistence.Name + 'Persistence NServiceBus')
-                .then(function (documentationMarkup) {
-                    $scope.persistenceDocumentation = documentationMarkup;
-                });
-        });
+        //    educationService
+        //        .getDocumentationMarkup($scope.selectedPersistence.Name + 'Persistence NServiceBus')
+        //        .then(function (documentationMarkup) {
+        //            $scope.persistenceDocumentation = documentationMarkup;
+        //        });
+        //});
 
-        $scope.$watch('selectedTransport', function () {
+        //$scope.$watch('selectedVersion.TransportSection.selectedItem', function () {
 
-            $scope.transportDocumentation = null;
+        //    $scope.transportDocumentation = null;
 
-            if (!$scope.selectedTransport) {
-                return;
-            }
+        //    if (!$scope.selectedTransport) {
+        //        return;
+        //    }
 
-            educationService
-                .getDocumentationMarkup($scope.selectedTransport.Name + 'Transport NServiceBus')
-                .then(function (documentationMarkup) {
-                    $scope.transportDocumentation = documentationMarkup;
-                });
-        });
+        //    educationService
+        //        .getDocumentationMarkup($scope.selectedTransport.Name + 'Transport NServiceBus')
+        //        .then(function (documentationMarkup) {
+        //            $scope.transportDocumentation = documentationMarkup;
+        //        });
+        //});
 
-        $scope.$watch('selectedSerializer', function () {
+        //$scope.$watch('selectedVersion.SerializerSection.selectedItem', function () {
 
-            $scope.serializationDocumentation = null;
+        //    $scope.serializationDocumentation = null;
 
-            if (!$scope.selectedSerializer) {
-                return;
-            }
+        //    if (!$scope.selectedSerializer) {
+        //        return;
+        //    }
 
-            educationService
-                .getDocumentationMarkup($scope.selectedSerializer.Name + 'Serializer NServiceBus')
-                .then(function (documentationMarkup) {
-                    $scope.serializationDocumentation = documentationMarkup;
-                });
-        });
+        //    educationService
+        //        .getDocumentationMarkup($scope.selectedSerializer.Name + 'Serializer NServiceBus')
+        //        .then(function (documentationMarkup) {
+        //            $scope.serializationDocumentation = documentationMarkup;
+        //        });
+        //});
 
         initialize();
     };

@@ -1,0 +1,15 @@
+<div class="wizard-configuration-section">
+    <div class="left-pane">
+        {{model.Title}}
+    </div>
+    <div class="right-pane">
+        <select ng-options="item as item.Name for item in model.Items"
+                ng-model="configurationSection.selectedItem"
+                ng-change="onChange()">
+            <option value="">--Select {{model.Title}}--</option>
+        </select>
+        <div>
+            {{model.HelpText}}
+        </div>
+    </div>
+</div>
