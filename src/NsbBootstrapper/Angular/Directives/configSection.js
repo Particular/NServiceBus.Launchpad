@@ -12,10 +12,6 @@
             },
             link: function (scope, element, attrs) {
                 scope.onChange = scope.onChange || function () { };
-
-                scope.$watch('model', function() {
-                    console.log(scope.model);
-                });
             }
         };
     });
