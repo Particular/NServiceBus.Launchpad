@@ -136,19 +136,13 @@
                 <div class="configuration-text">
                     <h3>Bus Configuration</h3>
 
-                    <code ng-repeat-start="line in bootstrapResult.Configuration">
-                        {{line}}
-                    </code>
-                    <br ng-if="!$last" ng-repeat-end/>
+                    <div hljs language="cs" source="bootstrapResult.Configuration"></div>
                 </div>
 
                 <div class="configuration-text">
                     <h3>NuGet Installer Commands</h3>
 
-                    <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
-                        Install-Package {{package}}
-                    </code>
-                    <br ng-if="!$last" ng-repeat-end/>
+                    <div hljs language="powershell" source="bootstrapResult.NuGetDependencies"></div>
                 </div>
             </div>
         </div>

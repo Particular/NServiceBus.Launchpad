@@ -5,12 +5,12 @@
         var busConfigurationBuilder = function () {
 
             var builder = {
-                configString: '',
+                configString: ''
 
             };
 
             builder.addLine = function(line) {
-                builder.configString = builder.configString + line + ";{{newLine}}";
+                builder.configString = builder.configString + line + ";\r\n";
             };
 
             builder.addLine('var busConfiguration = new BusConfiguration()');
@@ -41,11 +41,12 @@
                 return buildValue('Transport', configItem.Name + 'Transport');
             };
 
-            builder.build = function() {
+            builder.build = function () {
+                builder.configString = builder.configString + "#if DEBUG\r\n";
                 builder.addLine('busConfiguration.EnableInstallers()');
-                var lines = builder.configString.split('{{newLine}}');
-                lines.splice(-1, 1);
-                return lines;
+                builder.configString = builder.configString + "#endif\r\n";
+
+                return builder.configString;
             };
 
             return builder;
@@ -117,13 +118,24 @@
                 }
             };
 
+            nugetInstalls.build = function () {
+
+                var result = '';
+
+                for (var i = 0; i < nugetInstalls.length; i++) {
+                    result = result + 'Install-Package ' + nugetInstalls[i] + '\r\n';
+                }
+
+                return result;
+            };
+
             nugetInstalls.addDependencies(nuGetDependencyDictionary.Persistence[model.Persistence.Name]);
             nugetInstalls.addDependencies(nuGetDependencyDictionary.Serializer[model.Serializer.Name]);
             nugetInstalls.addDependencies(nuGetDependencyDictionary.Transport[model.Transport.Name]);
 
             deferred.resolve({
                 Configuration: busBuilder.build(),
-                NuGetDependencies: nugetInstalls
+                NuGetDependencies: nugetInstalls.build()
             });
 
             return deferred.promise;
