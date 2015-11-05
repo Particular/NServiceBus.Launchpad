@@ -69,25 +69,17 @@
         <p>The place where we write the boring code for you</p>
     </div>
 
-    <ol>
-        <li>Select your version number </li>
-        <li>Select your specific configuration from the available items for that version </li>
-        <li>Click 'Bootstrap Me' </li>
-        <li>Copy and paste the bus configuration into your project </li>
-        <li>Copy and paste the NuGet commands into your Package Manager Console </li>
-    </ol>
-
     <div>
 
         <div class="step-section">
 
             <h2>Step 1:</h2>
 
-            <p>Fill in your configuration details. </p>
+            <p>Pick the NServiceBus version you want to use.</p>
 
             <div class="wizard-configuration-section">
                 <div class="left-pane">
-                    Pick an NServiceBus Version:
+                    NServiceBus Version
                 </div>
                 <div class="right-pane">
                     <select ng-options="version as 'Version ' + version.NServiceBusVersion for version in builderModel.AvailableVersions"
@@ -100,10 +92,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="step-section" ng-show="selectedVersion">
+
+            <h2>Step 2:</h2>
+            <p>Fill in your configuration details. </p>
 
             <div ng-show="selectedVersion" class="wizard-configuration-section">
                 <div class="left-pane">
-                    Name your Endpoint:
+                   Endpoint Name
                 </div>
                 <div class="right-pane">
                     <input type="text" ng-model="endpointName" placeholder="Endpoint Name" />
@@ -120,7 +117,7 @@
 
         <div class="step-section" ng-show="selectedVersion">
 
-            <h2>Step 2:</h2>
+            <h2>Step 3:</h2>
 
             <p>Generate the code... </p>
 
@@ -129,7 +126,7 @@
 
         <div class="step-section" ng-show="bootstrapResult">
 
-            <h2>Step 3:</h2>
+            <h2>Step 4:</h2>
 
             <p>Copy paste the generated code into your solution. </p>
 
@@ -142,7 +139,7 @@
                     <code ng-repeat-start="line in bootstrapResult.Configuration">
                         {{line}}
                     </code>
-                    <br ng-if="!$last" ng-repeat-end />
+                    <br ng-if="!$last" ng-repeat-end/>
                 </div>
 
                 <div class="configuration-text">
@@ -151,17 +148,17 @@
                     <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
                         Install-Package {{package}}
                     </code>
-                    <br ng-if="!$last" ng-repeat-end />
+                    <br ng-if="!$last" ng-repeat-end/>
                 </div>
             </div>
         </div>
 
-    </div>
+        <div class="step-section" ng-show="bootstrapResult">
 
-    @*<div class="right-pane">
-            <h2>Documentation Links</h2>
-            <documentation-links attr-title="selectedSerializer.Name + 'Serializer'" attr-items="serializationDocumentation"></documentation-links>
-            <documentation-links attr-title="selectedTransport.Name + 'Transport'" attr-items="transportDocumentation"></documentation-links>
-            <documentation-links attr-title="selectedPersistence.Name + 'Persistence'" attr-items="persistenceDocumentation"></documentation-links>
-        </div>*@
+            <h2>Step 5:</h2>
+
+            <p>We would really like to know how this tool has helped you but more importantly how we can make it better.</p>
+            <p>Tell us what you think, email Us at <a href="mailto:support@particular.net">support@particular.net</a>.</p>
+        </div>
+     </div>
 </div>
