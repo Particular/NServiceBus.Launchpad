@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using NServiceBus.Bootstrapper;
+
 
 namespace NsbBootstrapper.Controllers
 {
     using System.IO;
     using System.Net;
     using System.Text;
+    using NServiceBus.Bootstrapper;
+
 
     public class HomeController : Controller
     {
@@ -21,10 +21,9 @@ namespace NsbBootstrapper.Controllers
         public string Documentation(string q)
         {
             var urlAddress = "http://docs.particular.net/search?q=" + q.Replace(" ", "+");
-            var request = (HttpWebRequest)WebRequest.Create(urlAddress);
-            using (var response = (HttpWebResponse)request.GetResponse())
+            var request = (HttpWebRequest) WebRequest.Create(urlAddress);
+            using (var response = (HttpWebResponse) request.GetResponse())
             {
-
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     using (var receiveStream = response.GetResponseStream())
