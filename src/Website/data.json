@@ -1,0 +1,61 @@
+﻿{
+    "version": "5",
+    "transports": [
+        {
+            "name": "MSMQ",
+            "packages": [ "NServiceBus" ]
+        },
+        {
+            "name": "SqlServer",
+            "packages": [ "NServiceBus.SqlServer" ]
+        },
+        {
+            "name": "RabbitMQ",
+            "packages": [ "NServiceBus.RabbitMQ" ]
+        },
+        {
+            "name": "AzureServiceBus",
+            "packages": [ "NServiceBus.Azure.Transports.WindowsAzureServiceBus" ]
+        },
+        {
+            "name": "AzureStorageQueues",
+            "packages": [ "NServiceBus.Azure.Transports.WindowsAzureStorageQueues" ]
+        }
+    ],
+    "persistences": [
+        {
+            "name": "None",
+            "packages": [ ]
+        },
+        {
+            "name": "NHibernate",
+            "packages": [ "NServiceBus.NHibernate" ]
+        },
+        {
+            "name": "RavenDB",
+            "packages": [ "NServiceBus.RavenDB" ]
+        },
+        {
+            "name": "AzureStoragePersistence",
+            "packages": [ "NServiceBus.Azure" ]
+        },
+        {
+            "name": "Msmq",
+            "packages": [ "NServiceBus" ]
+        }
+    ],
+    "serializers": [
+        {
+            "name": "Xml",
+            "packages": [ "NServiceBus" ]
+        },
+        {
+            "name": "Json",
+            "packages": [ "NServiceBus" ]
+        },
+        {
+            "name": "Binary",
+            "packages": [ "NServiceBus" ]
+        }
+    ]
+}

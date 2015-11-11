@@ -79,7 +79,5 @@ _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
-src/scaffolding.config
-
-# Approval tests temp file
-*.received.*
+wwwroot
+node_modules
