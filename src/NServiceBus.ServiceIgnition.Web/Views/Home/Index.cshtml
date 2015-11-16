@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewBag.Title = "NsbBootstrap";
+}
+
+<style>
+    div.logo {
+        padding: 15px;
+        margin: 10px;
+        background-color: #bbb;
+        display: inline-block;
+        text-align: center;
+        border: medium solid black;
+    }
+
+    .wizard-body {
+        width: 85%;
+        margin: auto;
+        margin-bottom: 25px;
+    }
+
+    select {
+        padding: 4px;
+    }
+
+    .wizard-configuration-section input {
+        width: 400px;
+    }
+
+    .wizard-configuration-section {
+        width: 100%;
+        padding: 5px;
+        border: thin solid black;
+        min-height: 80px;
+        border-bottom: none;
+    }
+
+    .step-section h2 {
+        border-bottom: medium solid black;
+        padding-bottom: 5px;
+    }
+
+    .step-section > .wizard-configuration-section:first-of-type {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .step-section > .wizard-configuration-section:last-of-type {
+        border-bottom: thin solid black;
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    .wizard-configuration-section div.left-pane {
+        width: 33%;
+        display: inline-block;
+    }
+
+    .wizard-configuration-section div.right-pane {
+        width: 66%;
+        display: inline-block;
+    }
+</style>
+
+<div ng-app="nsbBootstrap" ng-controller="bootstrapWizard" class="wizard-body">
+
+    <div class="logo">
+        <h1>NServiceBus Launchpad</h1>
+        <p>The place where we write the boring code for you</p>
+    </div>
+
+    <ol>
+        <li>Select your version number </li>
+        <li>Select your specific configuration from the available items for that version </li>
+        <li>Click 'Bootstrap Me' </li>
+        <li>Copy and paste the bus configuration into your project </li>
+        <li>Copy and paste the NuGet commands into your Package Manager Console </li>
+    </ol>
+
+    <div>
+
+        <div class="step-section">
+
+            <h2>Step 1:</h2>
+
+            <p>Fill in your configuration details. </p>
+
+            @* Version Selection *@
+            <div class="wizard-configuration-section">
+                <div class="left-pane">
+                    Pick an NServiceBus Version:
+                </div>
+                <div class="right-pane">
+                    <select ng-options="version as 'Version ' + version.NServiceBusVersion for version in builderModel.AvailableVersions"
+                            ng-model="selectedVersion"
+                            ng-change="setVersionDefaults()">
+                        <option value="">--Select version--</option>
+                    </select>
+                    <div>
+                        Here is some help text about picking a version.
+                    </div>
+                </div>
+            </div>
+
+            <config-section ng-show="selectedVersion" config-model="selectedVersion.TransportSection"></config-section>
+
+            <div class="wizard-configuration-section">
+                <button ng-show="selectedVersion"
+                        ng-click="addNewEndpoint()"
+                        class="btn btn-primary">
+                    Add New Endpoint
+                </button>
+            </div>
+
+            <div class="wizard-configuration-section"
+                 ng-show="selectedVersion" 
+                 ng-repeat="endpoint in endpointList">
+
+                <h3>{{endpoint.EndpointNamePlaceholder}}</h3>
+
+                <div class="wizard-configuration-section">
+                    <div class="left-pane">
+                        Name your Endpoint:
+                    </div>
+                    <div class="right-pane">
+                        <input type="text" ng-model="endpoint.EndpointNamePlaceholder" placeholder="Endpoint Name" />
+                        <div>
+                            Here is some help text about naming your endpoint.
+                        </div>
+                    </div>
+                </div>
+
+                <config-section config-model="endpoint.SerializerSection"></config-section>
+                <config-section config-model="endpoint.PersistenceSection"></config-section>
+
+                <div class="wizard-configuration-section">
+                    <input ng-model="endpoint.currentMessageName" /> &nbsp;
+                    <button ng-click="endpoint.addMessage(endpoint.currentMessageName)">
+                        Add New Message
+                    </button>
+                    &nbsp;
+                    <select ng-if="sharedMessages.length > 0"
+                            ng-options="message for message in sharedMessages"
+                            ng-model="endpoint.existingMessageToAdd"></select> &nbsp;
+                    <button ng-if="sharedMessages.length > 0"
+                            ng-click="endpoint.addMessage(endpoint.existingMessageToAdd)">
+                        Add Existing Message
+                    </button>
+                    <div>
+                        <button class="btn btn-info btn-xs"
+                                style="margin: 5px;"
+                                ng-repeat="message in endpoint.MessageHandlers"
+                                ng-click="endpoint.removeMessage(message)">
+                            {{message}} X
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="step-section" ng-show="selectedVersion">
+
+            <h2>Step 2:</h2>
+
+            <p>Generate the code... </p>
+
+            <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
+        </div>
+
+        <div class="step-section" ng-show="bootstrapResult">
+
+            <h2>Step 3:</h2>
+
+            <p>Copy paste the generated code into your solution. </p>
+
+            <div class="configuration-display">
+                <h4>Here is your bootstrapped configuration <span class="glyphicon glyphicon-hand-down"></span></h4>
+
+                <div class="configuration-text">
+                    <h3>Bus Configuration</h3>
+
+                    <code ng-repeat-start="line in bootstrapResult.Configuration">
+                        {{line}}
+                    </code>
+                    <br ng-if="!$last" ng-repeat-end />
+                </div>
+
+                <div class="configuration-text">
+                    <h3>NuGet Installer Commands</h3>
+
+                    <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
+                        Install-Package {{package}}
+                    </code>
+                    <br ng-if="!$last" ng-repeat-end />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @*<div class="right-pane">
+            <h2>Documentation Links</h2>
+            <documentation-links attr-title="selectedSerializer.Name + 'Serializer'" attr-items="serializationDocumentation"></documentation-links>
+            <documentation-links attr-title="selectedTransport.Name + 'Transport'" attr-items="transportDocumentation"></documentation-links>
+            <documentation-links attr-title="selectedPersistence.Name + 'Persistence'" attr-items="persistenceDocumentation"></documentation-links>
+        </div>*@
+</div>

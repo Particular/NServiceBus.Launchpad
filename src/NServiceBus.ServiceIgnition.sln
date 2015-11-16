@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition", "NServiceBus.ServiceIgnition\NServiceBus.ServiceIgnition.csproj", "{2C12957A-77D4-4867-BFAF-28B8E1A72590}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Version5", "Version5", "{7A6E0F02-03ED-45B4-82D6-3C21A7F4CFF0}"
+	ProjectSection(SolutionItems) = preProject
+		lib\Version5\NServiceBus.Core.V5.dll = lib\Version5\NServiceBus.Core.V5.dll
+		lib\Version5\NServiceBus.Core.V5.pdb = lib\Version5\NServiceBus.Core.V5.pdb
+		lib\Version5\NServiceBus.Core.V5.xml = lib\Version5\NServiceBus.Core.V5.xml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Shared", "NServiceBus.ServiceIgnition.Shared\NServiceBus.ServiceIgnition.Shared.csproj", "{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Version5", "NServiceBus.ServiceIgnition.Version5\NServiceBus.ServiceIgnition.Version5.csproj", "{946FC844-21C0-466B-B146-1780C70AD27A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Web", "NServiceBus.ServiceIgnition.Web\NServiceBus.ServiceIgnition.Web.csproj", "{47E5BF73-83B7-4A52-8E13-90525BBC37A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Tests", "NServiceBus.ServiceIgnition.Tests\NServiceBus.ServiceIgnition.Tests.csproj", "{7F79DC5D-AB0B-4779-B129-8974296C1206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateSerializer.Console", "TemplateSerializer.Console\TemplateSerializer.Console.csproj", "{D20D3D28-E066-4634-AA23-DEF507AEF477}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C12957A-77D4-4867-BFAF-28B8E1A72590}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C12957A-77D4-4867-BFAF-28B8E1A72590}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C12957A-77D4-4867-BFAF-28B8E1A72590}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C12957A-77D4-4867-BFAF-28B8E1A72590}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{946FC844-21C0-466B-B146-1780C70AD27A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{946FC844-21C0-466B-B146-1780C70AD27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{946FC844-21C0-466B-B146-1780C70AD27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{946FC844-21C0-466B-B146-1780C70AD27A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47E5BF73-83B7-4A52-8E13-90525BBC37A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47E5BF73-83B7-4A52-8E13-90525BBC37A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47E5BF73-83B7-4A52-8E13-90525BBC37A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47E5BF73-83B7-4A52-8E13-90525BBC37A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F79DC5D-AB0B-4779-B129-8974296C1206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F79DC5D-AB0B-4779-B129-8974296C1206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F79DC5D-AB0B-4779-B129-8974296C1206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F79DC5D-AB0B-4779-B129-8974296C1206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D20D3D28-E066-4634-AA23-DEF507AEF477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D20D3D28-E066-4634-AA23-DEF507AEF477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D20D3D28-E066-4634-AA23-DEF507AEF477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D20D3D28-E066-4634-AA23-DEF507AEF477}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{946FC844-21C0-466B-B146-1780C70AD27A} = {7A6E0F02-03ED-45B4-82D6-3C21A7F4CFF0}
+	EndGlobalSection
+EndGlobal
