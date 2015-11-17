@@ -11,7 +11,12 @@ namespace TemplateSerializer.Console
     {
         static void Main(string[] args)
         {
-            var basePath = @"C:\Git\ServiceIgnition\src\NServiceBus.ServiceIgnition.Version5\Templates\";
+            if (args.Length == 0)
+            {
+                throw new ArgumentException("Missing base path for TemplateSerializer.Console.");
+            }
+
+            var basePath = args[0];
 
             var busConfigurationPath = basePath + @"EndpointConfiguration\";
             var classTemplatePath = basePath + @"ClassDefinitions\";
@@ -123,7 +128,7 @@ namespace TemplateSerializer.Console
 
         static string CreateDictionaryClass(string name, Dictionary<string, string> templateDictionary)
         {
-            var entry = @"                { ""{{key}}"", @""{{value}}"" },";
+            var entry = @"        { ""{{key}}"", @""{{value}}"" },";
 
             var entries =
                 templateDictionary
@@ -142,11 +147,11 @@ namespace TemplateSerializer.Console
 using System.Collections.Generic;
 
 public static class TemplateDictionaryClass
-        {
-            public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
-            {
-                //# {{templates}}
-            }; 
-        }";
+{
+    public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
+    {
+//# {{templates}}
+    }; 
+}";
     }
 }

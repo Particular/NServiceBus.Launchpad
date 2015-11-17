@@ -3,47 +3,47 @@
 using System.Collections.Generic;
 
 public static class BusMethodTemplates
-        {
-            public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
-            {
-                                { "PersistenceMethods.None", @"
+{
+    public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
+    {
+        { "PersistenceMethods.None", @"
             // no persistence
         " },
-                { "PersistenceMethods.InMemory", @"
+        { "PersistenceMethods.InMemory", @"
             busConfiguration.UsePersistence<InMemoryPersistence>();
         " },
-                { "PersistenceMethods.Msmq", @"
+        { "PersistenceMethods.Msmq", @"
             busConfiguration.UsePersistence<MsmqPersistence>();
         " },
-                { "PersistenceMethods.NHibernate", @"
+        { "PersistenceMethods.NHibernate", @"
             busConfiguration.UsePersistence<NHibernatePersistence>();
         " },
-                { "PersistenceMethods.Raven", @"
+        { "PersistenceMethods.Raven", @"
             busConfiguration.UsePersistence<RavenDBPersistence>();
         " },
-                { "SerializerMethods.Json", @"
+        { "SerializerMethods.Json", @"
             busConfiguration.UseSerialization<JsonSerializer>();
         " },
-                { "SerializerMethods.Xml", @"
+        { "SerializerMethods.Xml", @"
             busConfiguration.UseSerialization<XmlSerializer>();
         " },
-                { "SerializerMethods.Binary", @"
+        { "SerializerMethods.Binary", @"
             busConfiguration.UseSerialization<BinarySerializer>();
         " },
-                { "TransportMethods.Msmq", @"
+        { "TransportMethods.Msmq", @"
             busConfiguration.UseTransport<MsmqTransport>();
         " },
-                { "TransportMethods.Sql", @"
+        { "TransportMethods.Sql", @"
             busConfiguration.UseTransport<SqlServerTransport>();
         " },
-                { "TransportMethods.Rabbit", @"
+        { "TransportMethods.Rabbit", @"
             busConfiguration.UseTransport<RabbitMQTransport>();
         " },
-                { "TransportMethods.AzureServiceBus", @"
+        { "TransportMethods.AzureServiceBus", @"
             busConfiguration.UseTransport<AzureServiceBusTransport>();
         " },
-                { "TransportMethods.AzureStorageQueue", @"
+        { "TransportMethods.AzureStorageQueue", @"
             busConfiguration.UseTransport<AzureStorageQueueTransport>();
         " },
-            }; 
-        }
+    }; 
+}

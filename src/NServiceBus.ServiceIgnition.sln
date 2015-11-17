@@ -15,6 +15,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Shared", "NServiceBus.ServiceIgnition.Shared\NServiceBus.ServiceIgnition.Shared.csproj", "{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Version5", "NServiceBus.ServiceIgnition.Version5\NServiceBus.ServiceIgnition.Version5.csproj", "{946FC844-21C0-466B-B146-1780C70AD27A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D20D3D28-E066-4634-AA23-DEF507AEF477} = {D20D3D28-E066-4634-AA23-DEF507AEF477}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.ServiceIgnition.Web", "NServiceBus.ServiceIgnition.Web\NServiceBus.ServiceIgnition.Web.csproj", "{47E5BF73-83B7-4A52-8E13-90525BBC37A7}"
 EndProject

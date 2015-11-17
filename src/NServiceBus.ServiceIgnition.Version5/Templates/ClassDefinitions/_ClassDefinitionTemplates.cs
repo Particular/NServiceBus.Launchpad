@@ -3,33 +3,32 @@
 using System.Collections.Generic;
 
 public static class ClassDefinitionTemplates
-        {
-            public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
-            {
-                                { "EndpointConfig", @"//# namespace {{endpointName}}
+{
+    public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
+    {
+        { "EndpointConfig", @"//# namespace {{endpointName}}
 //# {
     using NServiceBus;
     using NServiceBus.Transports;
     using NServiceBus.Serializers;
     using NServiceBus.Persistence;
 
-    public class EndpointConfig
+    public class EndpointConfig : IConfigureThisEndpoint
     {
-        public void Install()
+        public void Customize(BusConfiguration configuration)
         {
-        // helo all
-            var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName(""{{endpointName}}"");
-            //# {{configurationDetails}}
+        var busConfiguration = new BusConfiguration();
+        busConfiguration.EndpointName(""{{endpointName}}"");
+        //# {{configurationDetails}}
 #if DEBUG
-            //Enable installers is not to be run in production environments. It is for development purposes only.
-            busConfiguration.EnableInstallers();
+        //Enable installers is not to be run in production environments. It is for development purposes only.
+        busConfiguration.EnableInstallers();
 #endif
-        }
     }
+}
 
 //# }" },
-                { "MessageHandler", @"//# namespace {{endpointName}} 
+        { "MessageHandler", @"//# namespace {{endpointName}} 
 //# {
     using System;
     using NServiceBus;
@@ -44,7 +43,7 @@ public static class ClassDefinitionTemplates
     }
 
 //# }" },
-                { "MessagePlaceholder", @"using NServiceBus;
+        { "MessagePlaceholder", @"using NServiceBus;
 
 //# namespace Ignited.NServiceBus.Shared
 //# {
@@ -52,5 +51,5 @@ public static class ClassDefinitionTemplates
     {
     }
 //# }" },
-            }; 
-        }
+    }; 
+}

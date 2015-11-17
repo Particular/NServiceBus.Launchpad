@@ -3,8 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.CodeAnalysis.CSharp;
-    using NServiceBus.ServiceIgnition.Version5.EndpointConfiguration;
+    using Version5;
 
     public class BootstrappedSolutionBuilder_V5 : IBuildBootstrappedSolutions
     {

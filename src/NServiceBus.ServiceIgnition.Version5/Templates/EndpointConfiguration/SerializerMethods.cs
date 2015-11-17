@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace NServiceBus.ServiceIgnition.Version5.EndpointConfiguration
+﻿namespace NServiceBus.ServiceIgnition.Version5
 {
     using System;
     using System.Collections.Generic;
