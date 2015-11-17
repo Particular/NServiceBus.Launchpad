@@ -25,9 +25,23 @@ namespace NServiceBus.ServiceIgnition.Tests
             Assert.IsNotNull(solutionData);
         }
 
+        private static string ProjectDirectory()
+        {
+            var projectName = "NServiceBus.ServiceIgnition.Tests";
+            var projectDirectory = Directory.GetCurrentDirectory();
+            var resultIndex = projectDirectory.IndexOf(projectName);
+
+            if (resultIndex != -1)
+            {
+                projectDirectory = projectDirectory.Substring(0, resultIndex + projectName.Length);
+            }
+
+            return projectDirectory;
+        }
+
         private static string SaveSolution(BootstrappedSolution solutionData)
         {
-            var savePath = @"C:\Git\ServiceIgnition\src\NServiceBus.ServiceIgnition.Tests\GeneratedSolutions\" +
+            var savePath = ProjectDirectory() + @"\GeneratedSolutions\" +
                            Guid.NewGuid();
 
             Directory.CreateDirectory(savePath);
@@ -40,7 +54,7 @@ namespace NServiceBus.ServiceIgnition.Tests
 
         private static void InstallNuGetPackages(string solutionFile)
         {
-            var nugetExe = @"C:\Git\ServiceIgnition\src\NServiceBus.ServiceIgnition.Tests\NuGet.exe";
+            var nugetExe = ProjectDirectory() + @"\NuGet.exe";
 
             var commandOptions = " restore " + solutionFile;
 
