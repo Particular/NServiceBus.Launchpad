@@ -1,4 +1,6 @@
-﻿namespace NServiceBus.ServiceIgnition
+﻿using System.Text.RegularExpressions;
+
+namespace NServiceBus.ServiceIgnition
 {
     using System;
     using System.Collections.Generic;
@@ -90,22 +92,31 @@
 
         BootstrappedProject GenerateEndpoint(EndpointConfiguration endpointConfig, List<ProjectReferenceData> dependencies)
         {
+            var endpointConfigTemplate = GetClassTemplate<EndpointConfig>();
+
             var project = new BootstrappedProject()
             {
                 ProjectName = endpointConfig.EndpointName,
                 ProjectGuid = endpointConfig.ProjectGuid
             };
 
-            var busConfigurations = new List<string>();
+            var busConfigurations = new List<string>
+            {
+                GetMethodBody(TransportMethods.MethodsDictionary[endpointConfig.Transport]),
+                GetMethodBody(SerializerMethods.MethodsDictionary[endpointConfig.Serializer]),
+                GetMethodBody(PersistenceMethods.MethodsDictionary[endpointConfig.Persistence])
+            };
 
-            busConfigurations.Add(GetMethodBody(TransportMethods.MethodsDictionary[endpointConfig.Transport]));
-            busConfigurations.Add(GetMethodBody(SerializerMethods.MethodsDictionary[endpointConfig.Serializer]));
-            busConfigurations.Add(GetMethodBody(PersistenceMethods.MethodsDictionary[endpointConfig.Persistence]));
+            var indent = GetIndent(endpointConfigTemplate, TextPlaceholder.BusConfigurationCallsPlaceholder);
 
-            var busConfigurationsText = string.Join(Environment.NewLine + "            ", busConfigurations.ToArray());
+            var busConfigurationsText = string.Join(Environment.NewLine, busConfigurations.ToArray());
+
+            var newLineWithSpaces = new Regex(@"\r\n *");
+
+            busConfigurationsText = newLineWithSpaces.Replace(busConfigurationsText, Environment.NewLine + indent);
 
             var endpointClassText =
-                GetClassTemplate<EndpointConfig>()
+                endpointConfigTemplate
                     .Replace(TextPlaceholder.EndpointNamePlaceholder, endpointConfig.EndpointName)
                     .Replace(TextPlaceholder.BusConfigurationCallsPlaceholder, busConfigurationsText);
 
@@ -137,6 +148,21 @@
             });
 
             return project;
+        }
+
+        private static string GetIndent(string classTemplate, string placeholder)
+        {
+            var locationOfPlaceholder = classTemplate.IndexOf(placeholder);
+
+            var stringUntilTemplate = classTemplate.Substring(0, locationOfPlaceholder);
+
+            var withoutTrailingSpaces = stringUntilTemplate.TrimEnd(' ');
+
+            var numberOfSpaces = stringUntilTemplate.Length - withoutTrailingSpaces.Length;
+
+            var spaces = new String(' ', numberOfSpaces);
+
+            return spaces;
         }
 
         protected string GetClassTemplate<T>()

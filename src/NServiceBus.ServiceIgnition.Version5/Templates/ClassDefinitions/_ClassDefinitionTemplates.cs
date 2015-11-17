@@ -17,12 +17,13 @@ public static class ClassDefinitionTemplates
     {
         public void Customize(BusConfiguration configuration)
         {
-        var busConfiguration = new BusConfiguration();
-        busConfiguration.EndpointName(""{{endpointName}}"");
-        //# {{configurationDetails}}
+            var busConfiguration = new BusConfiguration();
+            busConfiguration.EndpointName(""{{endpointName}}"");
+            //# {{configurationDetails}}
+
 #if DEBUG
-        //Enable installers is not to be run in production environments. It is for development purposes only.
-        busConfiguration.EnableInstallers();
+            //Enable installers is not to be run in production environments. It is for development purposes only.
+            busConfiguration.EnableInstallers();
 #endif
     }
 }

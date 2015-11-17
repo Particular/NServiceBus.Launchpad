@@ -16,6 +16,8 @@
 
         public static void Msmq(BusConfiguration busConfiguration)
         {
+            // Msmq is the default transport for NServiceBus.
+            // It has been included in the core library since the first version.
             busConfiguration.UseTransport<MsmqTransport>();
         }
 

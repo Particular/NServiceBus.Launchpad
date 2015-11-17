@@ -36,7 +36,7 @@ namespace TemplateSerializer.Console
             };
 
             ActOnCSharpFiles(basePath, addClassTemplate);
-            
+
             var textToSave = CreateDictionaryClass(ClassDefinitionClassName, templateDictionary);
 
             var fileSavePath = basePath + "_" + ClassDefinitionClassName + ".cs";
@@ -92,6 +92,7 @@ namespace TemplateSerializer.Console
 
                 methodBody = ReplaceFirstOccurrence(methodBody, Environment.NewLine, "");
                 methodBody = ReplaceLastOccurrence(methodBody, Environment.NewLine, "");
+                methodBody = methodBody.Trim();
 
                 metadata.Add(new TemplateMethodMetadata()
                 {
@@ -120,9 +121,9 @@ namespace TemplateSerializer.Console
 
         private static bool ShouldExcludeFile(string fileName)
         {
-            return 
-                !fileName.EndsWith(".cs") 
-                || fileName.Contains(BusMethodClassName) 
+            return
+                !fileName.EndsWith(".cs")
+                || fileName.Contains(BusMethodClassName)
                 || fileName.Contains(ClassDefinitionClassName);
         }
 
