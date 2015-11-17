@@ -90,6 +90,9 @@ namespace TemplateSerializer.Console
                 var methodName = match.Groups[1].Value;
                 var methodBody = match.Groups[2].Value;
 
+                methodBody = ReplaceFirstOccurrence(methodBody, Environment.NewLine, "");
+                methodBody = ReplaceLastOccurrence(methodBody, Environment.NewLine, "");
+
                 metadata.Add(new TemplateMethodMetadata()
                 {
                     ClassName = className,
@@ -99,6 +102,20 @@ namespace TemplateSerializer.Console
             }
 
             return metadata;
+        }
+
+        private static string ReplaceFirstOccurrence(string Source, string Find, string Replace)
+        {
+            int Place = Source.IndexOf(Find);
+            string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
+            return result;
+        }
+
+        private static string ReplaceLastOccurrence(string Source, string Find, string Replace)
+        {
+            int Place = Source.LastIndexOf(Find);
+            string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
+            return result;
         }
 
         private static bool ShouldExcludeFile(string fileName)
