@@ -290,7 +290,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.ServiceIgnition.Shared\NServiceBus.ServiceIgnition.Shared.csproj">
       <Project>{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}</Project>
-      <Name>NServiceBus.Bootstrapper.Shared</Name>
+      <Name>NServiceBus.ServiceIgnition.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -41,8 +41,10 @@
         public BootstrappedSolution()
         {
             SolutionRoot = new FolderAbstraction();
+            ProjectDependencyDictionary = new Dictionary<string, List<NugetDependency>>();
         }
 
+        public Dictionary<string, List<NugetDependency>> ProjectDependencyDictionary { get; set; } 
         public FolderAbstraction SolutionRoot { get; set; }
         public string SolutionName { get; set; }
     }

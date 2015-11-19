@@ -50,6 +50,7 @@
     <Compile Include="IBuildBootstrappedSolutions.cs" />
     <Compile Include="NugetDependency.cs" />
     <Compile Include="Placeholders\TextPlaceholder.cs" />
+    <Compile Include="SolutionSaver.cs" />
     <Compile Include="TemplateMethodMetadata.cs" />
     <Compile Include="Templates\NuGetPackagesTemplator.cs" />
     <Compile Include="Templates\SolutionFileTemplator.cs" />

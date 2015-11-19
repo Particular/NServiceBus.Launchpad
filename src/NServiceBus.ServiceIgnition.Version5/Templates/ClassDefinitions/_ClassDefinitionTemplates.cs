@@ -25,8 +25,8 @@ public static class ClassDefinitionTemplates
             //Enable installers is not to be run in production environments. It is for development purposes only.
             busConfiguration.EnableInstallers();
 #endif
+        }
     }
-}
 
 //# }" },
         { "MessageHandler", @"//# namespace {{endpointName}} 

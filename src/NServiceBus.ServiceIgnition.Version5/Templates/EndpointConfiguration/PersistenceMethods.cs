@@ -18,11 +18,13 @@ namespace NServiceBus.ServiceIgnition.Version5
 
         public static void None(BusConfiguration busConfiguration)
         {
-            // no persistence
+            // no persistence, persistence is optional
         }
 
         public static void InMemory(BusConfiguration busConfiguration)
         {
+            // This is not suitable for production use
+            // Please choose a more suitable persistence unless you don't care if you lose subscriptions on restart
             busConfiguration.UsePersistence<InMemoryPersistence>();
         }
 

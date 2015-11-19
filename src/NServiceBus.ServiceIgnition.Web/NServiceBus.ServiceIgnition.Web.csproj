@@ -234,11 +234,11 @@
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.ServiceIgnition.Shared\NServiceBus.ServiceIgnition.Shared.csproj">
       <Project>{D81D401D-8384-4ACF-BD0B-5B470E64EC1C}</Project>
-      <Name>NServiceBus.Bootstrapper.Shared</Name>
+      <Name>NServiceBus.ServiceIgnition.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="..\NServiceBus.ServiceIgnition.Version5\NServiceBus.ServiceIgnition.Version5.csproj">
       <Project>{946FC844-21C0-466B-B146-1780C70AD27A}</Project>
-      <Name>NServiceBus.Bootstrapper.Version5</Name>
+      <Name>NServiceBus.ServiceIgnition.Version5</Name>
     </ProjectReference>
     <ProjectReference Include="..\NServiceBus.Bootstrapper.Version6\NServiceBus.Bootstrapper.Version6.csproj">
       <Project>{46544CFC-16F2-45DF-BBC5-A833E90A57E2}</Project>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Management.Automation;
+using NuGet;
+using NuGet.VisualStudio;
 using NUnit.Framework;
 
 namespace NServiceBus.ServiceIgnition.Tests
@@ -18,9 +20,15 @@ namespace NServiceBus.ServiceIgnition.Tests
 
             var solutionData = ignitor.BootstrapSolution(configuration);
 
-            var solutionFile = SaveSolution(solutionData);
+            var solutionDirectory = ProjectDirectory() + @"\GeneratedSolutions\" + Guid.NewGuid();
 
-            InstallNuGetPackages(solutionFile);
+            var solutionSaver = new SolutionSaver();
+
+            var solutionFile = solutionSaver.SaveSolution(solutionDirectory, solutionData);
+
+            var pathToNuGetExe = ProjectDirectory() + @"\NuGet.exe";
+
+            solutionSaver.InstallNuGetPackages(solutionDirectory, solutionData, solutionFile, pathToNuGetExe);
 
             Assert.IsNotNull(solutionData);
         }
@@ -39,51 +47,7 @@ namespace NServiceBus.ServiceIgnition.Tests
             return projectDirectory;
         }
 
-        private static string SaveSolution(BootstrappedSolution solutionData)
-        {
-            var savePath = ProjectDirectory() + @"\GeneratedSolutions\" +
-                           Guid.NewGuid();
-
-            Directory.CreateDirectory(savePath);
-
-            CrawlAndSaveFiles(savePath + @"\", solutionData.SolutionRoot);
-
-            var solutionFile = Directory.GetFiles(savePath).Single(fn => fn.EndsWith(".sln"));
-            return solutionFile;
-        }
-
-        private static void InstallNuGetPackages(string solutionFile)
-        {
-            var nugetExe = ProjectDirectory() + @"\NuGet.exe";
-
-            var commandOptions = " restore " + solutionFile;
-
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
-            {
-                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
-                FileName = nugetExe,
-                Arguments = commandOptions
-            };
-            process.StartInfo = startInfo;
-            process.Start();
-        }
-
-        private static void CrawlAndSaveFiles(string path, FolderAbstraction folder)
-        {
-            foreach (var file in folder.Files)
-            {
-                File.WriteAllText(path + file.Name, file.Content);
-            }
-
-            foreach (var child in folder.Folders)
-            {
-                var newDirectory = path + child.Name;
-                Directory.CreateDirectory(newDirectory);
-                CrawlAndSaveFiles(newDirectory + @"\", child);
-            }
-        }
-
+     
         private static SolutionConfiguration CreateBasicConfiguration()
         {
             var configuration = new SolutionConfiguration()
@@ -99,12 +63,11 @@ namespace NServiceBus.ServiceIgnition.Tests
                 Transport = configuration.Transport,
                 Serializer = Serializer.Json,
                 EndpointName = "SomeEndpoint",
-                Persistence = Persistence.None,
                 MessageHandlers = new List<MessageHandlerConfiguration>()
                 {
                     new MessageHandlerConfiguration() {MessageTypeName = "SomeMessage"},
                     new MessageHandlerConfiguration() {MessageTypeName = "SomeOtherMessage"},
-                    new MessageHandlerConfiguration() {MessageTypeName = "BlahblahMessage"},
+                    new MessageHandlerConfiguration() {MessageTypeName = "BlahBlahMessage"},
                 }
             });
 
@@ -114,7 +77,6 @@ namespace NServiceBus.ServiceIgnition.Tests
                 Transport = configuration.Transport,
                 Serializer = Serializer.Json,
                 EndpointName = "SomeOtherEndpoint",
-                Persistence = Persistence.None,
                 MessageHandlers = new List<MessageHandlerConfiguration>()
                 {
                     new MessageHandlerConfiguration() {MessageTypeName = "SomeOtherMessage"},

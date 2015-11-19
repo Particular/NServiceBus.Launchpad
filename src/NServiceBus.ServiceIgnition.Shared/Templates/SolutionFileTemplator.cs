@@ -5,6 +5,22 @@
 
     public class SolutionFileTemplator
     {
+        private static string CreateInstructionsFolder(Guid solutionGuid)
+        {
+            var template =
+@"Project(""{{2150E333-8FDC-42A3-9474-1A3956D46DE8}}"") = ""_Instructions"", ""_Instructions"", ""{{{projectGuid}}}""
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject";
+
+            var result =
+                template
+                    .Replace("{{projectGuid}}", Guid.NewGuid().ToString());
+
+            return result;
+        }
+
         private static string CreateProjectInclude(Guid solutionGuid, Guid projectGuid, string projectName)
         {
             var template = @"Project(""{{{solutionGuid}}}"") = ""{{projectName}}"", ""{{projectName}}\{{projectName}}.csproj"", ""{{{projectGuid}}}""
@@ -18,6 +34,7 @@ EndProject";
 
             return result;
         }
+
         private static string CreateProjectConfiguration(Guid projectGuid)
         {
             var template = @"		{{{projectGuid}}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -57,6 +74,7 @@ EndProject";
             var solutionFileContent =
                 SolutionFileTemplate
                     .Replace("{{projectIncludes}}", string.Join(Environment.NewLine, projectIncludes))
+                    //.Replace("{{instructionsIncludes}}", CreateInstructionsFolder(solutionGuid))
                     .Replace("{{projectConfigurations}}", string.Join(Environment.NewLine, projectConfigurations));
 
             var solutionFile = new FileAbstraction()
@@ -66,13 +84,15 @@ EndProject";
             };
 
             return solutionFile;
-        } 
+        }
 
-        public static string SolutionFileTemplate = @"Microsoft Visual Studio Solution File, Format Version 12.00
+        public static string SolutionFileTemplate = 
+@"Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 {{projectIncludes}}
+{{instructionsIncludes}}
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

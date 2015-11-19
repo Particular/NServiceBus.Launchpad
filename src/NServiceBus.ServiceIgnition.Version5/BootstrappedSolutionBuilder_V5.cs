@@ -13,12 +13,19 @@ namespace NServiceBus.ServiceIgnition
 
         public BootstrappedSolution BootstrapSolution(SolutionConfiguration solutionConfig)
         {
+            var solution = new BootstrappedSolution();
             var projects = new List<BootstrappedProject>();
             var globalDependencies = new List<ProjectReferenceData>();
 
             var messagesProject = GenerateMessagesProject(solutionConfig);
 
+            var messagesProjectDependencies =
+                dependencyMapper.GetDependencies(solutionConfig.NServiceBusVersion, solutionConfig.Transport);
+
             projects.Add(messagesProject);
+            
+            solution.ProjectDependencyDictionary.Add(messagesProject.ProjectName, messagesProjectDependencies);
+
             globalDependencies.Add(new ProjectReferenceData()
             {
                 Name=messagesProject.ProjectName,
@@ -29,10 +36,10 @@ namespace NServiceBus.ServiceIgnition
             foreach (var endpointConfig in solutionConfig.EndpointConfigurations)
             {
                 var endpointProject = GenerateEndpoint(endpointConfig, globalDependencies);
+                var dependencies = dependencyMapper.GetEndpointDependencies(endpointConfig);
+                solution.ProjectDependencyDictionary.Add(endpointProject.ProjectName, dependencies);
                 projects.Add(endpointProject);
             }
-
-            var solution = new BootstrappedSolution();
 
             foreach (var project in projects)
             {

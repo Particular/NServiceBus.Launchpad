@@ -6,8 +6,10 @@ public static class BusMethodTemplates
 {
     public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
     {
-        { "PersistenceMethods.None", @"// no persistence" },
-        { "PersistenceMethods.InMemory", @"busConfiguration.UsePersistence<InMemoryPersistence>();" },
+        { "PersistenceMethods.None", @"// no persistence, persistence is optional" },
+        { "PersistenceMethods.InMemory", @"// This is not suitable for production use
+            //Please choose a more suitable persistence unless you don't care if you lose subscriptions on restart
+            busConfiguration.UsePersistence<InMemoryPersistence>();" },
         { "PersistenceMethods.Msmq", @"busConfiguration.UsePersistence<MsmqPersistence>();" },
         { "PersistenceMethods.NHibernate", @"busConfiguration.UsePersistence<NHibernatePersistence>();" },
         { "PersistenceMethods.Raven", @"busConfiguration.UsePersistence<RavenDBPersistence>();" },
