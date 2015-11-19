@@ -35,12 +35,12 @@
             var endpoints = $scope.endpointList;
 
             for (var i = 0; i < endpoints.length; i++) {
-                endpoints[i].NServiceBusVersion = version.Value;
+                endpoints[i].NServiceBusVersion = version.NServiceBusVersion;
                 endpoints[i].Transport = transport.Value;
             }
 
             var model = {
-                NServiceBusVersion: version.Value,
+                NServiceBusVersion: version.NServiceBusVersion,
                 Transport: transport.Value,
                 EndpointConfigurations: endpoints
             };
@@ -85,7 +85,7 @@
             var messageExists = function(messageName) {
 
                 for (var i = 0; i < endpoint.MessageHandlers.length; i++) {
-                    if (endpoint.MessageHandlers[i] === messageName) {
+                    if (endpoint.MessageHandlers[i].MessageTypeName === messageName) {
                         return true;
                     }
                 }
@@ -101,7 +101,7 @@
                     return;
                 }
 
-                endpoint.MessageHandlers.push(messageName);
+                endpoint.MessageHandlers.push({ MessageTypeName: messageName });
 
                 if ($scope.messageDefinitions[messageName] > 0) {
                     $scope.messageDefinitions[messageName]++;
@@ -121,8 +121,8 @@
                 var newMessageList = [];
 
                 for (var i = 0; i < endpoint.MessageHandlers.length; i++) {
-                    if (endpoint.MessageHandlers[i] !== messageName) {
-                        newMessageList.push(endpoint.MessageHandlers[i]);
+                    if (endpoint.MessageHandlers[i].MessageTypeName !== messageName) {
+                        newMessageList.push(endpoint.MessageHandlers[i].MessageTypeName);
                     }
                 }
 

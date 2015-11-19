@@ -1,11 +1,43 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Ionic.Zip;
 
-namespace NServiceBus.ServiceIgnition.Tests
+namespace NServiceBus.ServiceIgnition
 {
     public class SolutionSaver
     {
+        private readonly string SavePath;
+        private readonly string NuGetExe;
+
+        public SolutionSaver(string savePath, string nugetExePath)
+        {
+            SavePath = savePath;
+            NuGetExe = nugetExePath;
+        }
+
+        public string CreateSolution(IBuildBootstrappedSolutions bootstrapper, SolutionConfiguration configuration)
+        {
+            var solutionData = bootstrapper.BootstrapSolution(configuration);
+
+            var solutionDirectory = SavePath + Guid.NewGuid();
+
+            var solutionFile = SaveSolution(solutionDirectory, solutionData);
+
+            InstallNuGetPackages(solutionDirectory, solutionData, solutionFile, NuGetExe);
+
+            var zipFilePath = solutionFile.Replace(".sln", ".zip");
+
+            using (var zip = new ZipFile())
+            {
+                zip.AddDirectory(solutionDirectory, "rootInZipFile");
+                zip.Save(zipFilePath);
+            }
+
+            return zipFilePath;
+        }
+
         public string SaveSolution(string savePath, BootstrappedSolution solutionData)
         {
             Directory.CreateDirectory(savePath);

@@ -11,6 +11,8 @@ namespace NServiceBus.ServiceIgnition
     {
         private AbstractNuGetDependencyMapper dependencyMapper = new NugetDependencyManager_V5();
 
+        public NServiceBusVersion Version => NServiceBusVersion.Five;
+
         public BootstrappedSolution BootstrapSolution(SolutionConfiguration solutionConfig)
         {
             var solution = new BootstrappedSolution();

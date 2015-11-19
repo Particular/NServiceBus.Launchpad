@@ -21,12 +21,11 @@ namespace NServiceBus.ServiceIgnition.Tests
             var solutionData = ignitor.BootstrapSolution(configuration);
 
             var solutionDirectory = ProjectDirectory() + @"\GeneratedSolutions\" + Guid.NewGuid();
+            var pathToNuGetExe = ProjectDirectory() + @"\NuGet.exe";
 
-            var solutionSaver = new SolutionSaver();
+            var solutionSaver = new SolutionSaver(solutionDirectory, pathToNuGetExe);
 
             var solutionFile = solutionSaver.SaveSolution(solutionDirectory, solutionData);
-
-            var pathToNuGetExe = ProjectDirectory() + @"\NuGet.exe";
 
             solutionSaver.InstallNuGetPackages(solutionDirectory, solutionData, solutionFile, pathToNuGetExe);
 
