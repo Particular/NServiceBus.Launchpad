@@ -59,7 +59,7 @@
     <Compile Include="Templates\AppConfigTemplator.cs" />
     <Compile Include="Templates\NuGetPackagesTemplator.cs" />
     <Compile Include="Templates\SolutionFileTemplator.cs" />
-    <Compile Include="Templates\ClassLibraryProjectFileTemplator.cs" />
+    <Compile Include="Templates\ProjectFileTemplator.cs" />
     <Compile Include="ValueTypes\BusMethod.cs" />
     <Compile Include="ValueTypes\NServiceBusVersion.cs" />
     <Compile Include="ValueTypes\Persistence.cs" />

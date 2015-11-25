@@ -8,7 +8,8 @@ public static class BusMethodTemplates
     {
         { "BusMethods.Send", @"bus.Send(new MessagePlaceholder());" },
         { "BusMethods.Publish", @"bus.Publish(new EventPlaceholder());" },
-        { "PersistenceMethods.None", @"// no persistence, persistence is optional" },
+        { "PersistenceMethods.None", @"// Having no persistence configured is only suitable for transports which support native publish-subscribe
+            // http://docs.particular.net/nservicebus/messaging/publish-subscribe/#mechanics-native-based" },
         { "PersistenceMethods.InMemory", @"// This is not suitable for production use
             busConfiguration.UsePersistence<InMemoryPersistence>();" },
         { "PersistenceMethods.Msmq", @"busConfiguration.UsePersistence<MsmqPersistence>();" },

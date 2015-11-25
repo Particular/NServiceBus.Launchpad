@@ -9,16 +9,17 @@ namespace NServiceBus.ServiceIgnition.Version5
     {
         public static Dictionary<Persistence, Action<BusConfiguration>> MethodsDictionary = new Dictionary<Persistence, Action<BusConfiguration>>()
         {
-            { Persistence.None, None },
+            { Persistence.None, None},
             { Persistence.InMemory, InMemory},
             { Persistence.Msmq, Msmq },
             { Persistence.NHibernate, NHibernate },
             { Persistence.RavenDB, Raven },
-        };  
+        };
 
         public static void None(BusConfiguration busConfiguration)
         {
-            // no persistence, persistence is optional
+            // Having no persistence configured is only suitable for transports which support native publish-subscribe
+            // http://docs.particular.net/nservicebus/messaging/publish-subscribe/#mechanics-native-based
         }
 
         public static void InMemory(BusConfiguration busConfiguration)

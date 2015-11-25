@@ -6,17 +6,20 @@
 
     public class AppConfigTemplator
     {
-        private const string MappingTemplate = @"        <add Assembly=""{{assemblyName}}"" Type=""{{messageName}}"" Endpoint=""{{subscribingEndpoint}}"" />";
+        private const string MappingTemplate = @"        <add Assembly=""{{assemblyName}}"" Type=""{{namespace}}.{{messageName}}"" Endpoint=""{{subscribingEndpoint}}"" />";
 
         private static string MakeMapping(string messageAssembly, string messageName, string endpoint)
         {
-            var mapping = 
+            var namespaceText = messageAssembly;
+
+            var mapping =
                 MappingTemplate
                 .Replace("{{assemblyName}}", messageAssembly)
+                .Replace("{{namespace}}", namespaceText)
                 .Replace("{{messageName}}", messageName)
                 .Replace("{{subscribingEndpoint}}", endpoint);
 
-            return mapping;
+            return Environment.NewLine + mapping;
         }
 
         public static FileAbstraction CreateAppConfig(SolutionConfiguration solutionConfiguration)
@@ -25,13 +28,32 @@
 
             foreach (var endpoint in solutionConfiguration.EndpointConfigurations)
             {
-                foreach (var message in endpoint.MessageHandlers)
+                foreach (var message in endpoint.MessageHandlers.Where(m => !m.IsEvent))
                 {
                     mappings.Add(MakeMapping(TextPlaceholder.SharedProjectName, message.MessageTypeName, endpoint.EndpointName));
                 }
             }
 
-            var mappingSection = string.Join(Environment.NewLine, mappings.ToArray());
+            var mappingSection = string.Join("", mappings.ToArray());
+
+            var appConfig = FileTemplate.Replace("{{messageMappings}}", mappingSection);
+
+            return new FileAbstraction()
+            {
+                Name = "app.config",
+                Content = appConfig,
+            };
+        }
+        public static FileAbstraction CreateAppConfig(EndpointConfiguration endpoint)
+        {
+            var mappings = new List<string>();
+
+            foreach (var message in endpoint.MessageHandlers.Where(m => m.IsEvent))
+            {
+                mappings.Add(MakeMapping(TextPlaceholder.SharedProjectName, message.MessageTypeName, TextPlaceholder.ConsoleProjectName));
+            }
+
+            var mappingSection = string.Join("", mappings.ToArray());
 
             var appConfig = FileTemplate.Replace("{{messageMappings}}", mappingSection);
 

@@ -8,7 +8,7 @@
         public static Dictionary<Serializer, Action<BusConfiguration>> MethodsDictionary = new Dictionary<Serializer, Action<BusConfiguration>>()
         {
             { Serializer.Json, Json },
-            { Serializer.Xml, Xml},
+            { Serializer.Xml, Xml },
             { Serializer.Binary, Binary },
         };
 

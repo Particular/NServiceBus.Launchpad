@@ -15,6 +15,8 @@ namespace NServiceBus.ServiceIgnition
 
         public BootstrappedSolution BootstrapSolution(SolutionConfiguration solutionConfig)
         {
+            MarkMessagesAsEvents(solutionConfig);
+
             var solution = new BootstrappedSolution();
             var projects = new List<BootstrappedProject>();
             var globalDependencies = new List<ProjectReferenceData>();
@@ -25,12 +27,12 @@ namespace NServiceBus.ServiceIgnition
                 dependencyMapper.GetDependencies(solutionConfig.NServiceBusVersion, solutionConfig.Transport);
 
             projects.Add(messagesProject);
-            
+
             solution.ProjectDependencyDictionary.Add(messagesProject.ProjectName, messagesProjectDependencies);
 
             globalDependencies.Add(new ProjectReferenceData()
             {
-                Name=messagesProject.ProjectName,
+                Name = messagesProject.ProjectName,
                 ProjectGuid = messagesProject.ProjectGuid,
                 QualifiedLocation = "",
             });
@@ -77,6 +79,8 @@ namespace NServiceBus.ServiceIgnition
             var busConfigurations = new List<string>
             {
                 GetMethodBody(TransportMethods.MethodsDictionary[solutionConfig.Transport]),
+                GetMethodBody(SerializerMethods.MethodsDictionary[solutionConfig.Serializer]),
+                GetMethodBody(PersistenceMethods.MethodsDictionary[Persistence.InMemory]),
             };
 
             var uniqueMessages = GetUniqueMessages(solutionConfig);
@@ -87,16 +91,10 @@ namespace NServiceBus.ServiceIgnition
                     .Select(m =>
                         GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Send]).Replace(TextPlaceholder.MessagePlaceholder, m.MessageTypeName));
 
-            var eventExamples =
-                uniqueMessages
-                    .Where(i => i.IsEvent)
-                    .Select(m =>
-                        GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Publish]).Replace(TextPlaceholder.EventPlaceholder, m.MessageTypeName));
-
             var messageExamples = new List<string>();
 
             messageExamples.AddRange(commandExamples);
-            messageExamples.AddRange(eventExamples);
+            //messageExamples.AddRange(eventExamples);
 
             var programContent = GetClassTemplate<Program>();
 
@@ -113,11 +111,13 @@ namespace NServiceBus.ServiceIgnition
                 dependencyMapper.GetDependencies(solutionConfig.NServiceBusVersion, solutionConfig.Transport);
 
             consoleProject.ProjectRoot.Files.Add(NuGetPackagesTemplator.CreatePackagesFile(nugetDependencies));
+            consoleProject.ProjectRoot.Files.Add(AppConfigTemplator.CreateAppConfig(solutionConfig));
+            consoleProject.ProjectRoot.Files.Add(new FileAbstraction() { Name = "ProvideErrorConfiguration.cs", Content = GetClassTemplate<ProvideErrorConfiguration>() });
 
             consoleProject.ProjectRoot.Files.Add(new FileAbstraction()
             {
                 Name = consoleProject.ProjectName + ".csproj",
-                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(consoleProject, ProjectType.Exe, projectDependencies)
+                Content = ProjectFileTemplator.CreateProjectFile(consoleProject, ProjectType.Exe, projectDependencies)
             });
 
             return consoleProject;
@@ -150,7 +150,7 @@ namespace NServiceBus.ServiceIgnition
             messagesProject.ProjectRoot.Files.AddRange(commandClasses);
             messagesProject.ProjectRoot.Files.AddRange(eventClasses);
 
-            var dependencies = 
+            var dependencies =
                 dependencyMapper.GetDependencies(solutionConfig.NServiceBusVersion, solutionConfig.Transport);
 
             messagesProject.ProjectRoot.Files.Add(NuGetPackagesTemplator.CreatePackagesFile(dependencies));
@@ -158,10 +158,33 @@ namespace NServiceBus.ServiceIgnition
             messagesProject.ProjectRoot.Files.Add(new FileAbstraction()
             {
                 Name = messagesProject.ProjectName + ".csproj",
-                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(messagesProject, ProjectType.Library)
+                Content = ProjectFileTemplator.CreateProjectFile(messagesProject, ProjectType.Library)
             });
 
             return messagesProject;
+        }
+
+        private static void MarkMessagesAsEvents(SolutionConfiguration solutionConfig)
+        {
+            var messageReference = new Dictionary<string, List<MessageHandlerConfiguration>>();
+
+            var messagesToCheck =
+                solutionConfig.EndpointConfigurations.SelectMany(e => e.MessageHandlers);
+
+            foreach (var message in messagesToCheck)
+            {
+                var key = message.MessageTypeName;
+
+                if (messageReference.ContainsKey(key))
+                {
+                    messageReference[key].Add(message);
+                    messageReference[key].ForEach(i => i.IsEvent = true);
+                }
+                else
+                {
+                    messageReference.Add(key, new List<MessageHandlerConfiguration>() { message });
+                }
+            }
         }
 
         private static List<MessageHandlerConfiguration> GetUniqueMessages(SolutionConfiguration solutionConfig)
@@ -186,7 +209,7 @@ namespace NServiceBus.ServiceIgnition
 
         BootstrappedProject GenerateEndpoint(EndpointConfiguration endpointConfig, List<ProjectReferenceData> dependencies)
         {
-            var endpointConfigTemplate = GetClassTemplate<EndpointConfig>();
+            var endpointConfigTemplate = GetClassTemplate<ProgramService>();
 
             var project = new BootstrappedProject()
             {
@@ -207,19 +230,21 @@ namespace NServiceBus.ServiceIgnition
 
             endpointClassText = PlaceIndentedMultiLineText(endpointClassText, TextPlaceholder.BusConfigurationCallsPlaceholder, busConfigurations);
 
-            project.ProjectRoot.Files.Add(new FileAbstraction() { Name = "EndpointConfig.cs", Content = endpointClassText });
+            project.ProjectRoot.Files.Add(new FileAbstraction() { Name = "ProgramService.cs", Content = endpointClassText });
+            project.ProjectRoot.Files.Add(new FileAbstraction() { Name = "ProvideErrorConfiguration.cs", Content = GetClassTemplate<ProvideErrorConfiguration>() });
 
             var messageHandlers = endpointConfig.MessageHandlers.Select(m => new FileAbstraction()
             {
                 Name = m.MessageTypeName + "Handler.cs",
-                Content = 
+                Content =
                     GetClassTemplate<MessageHandler>()
                         .Replace("MessageHandler", m.MessageTypeName + "Handler")
                         .Replace(TextPlaceholder.EndpointNamePlaceholder, endpointConfig.EndpointName)
                         .Replace(TextPlaceholder.MessagePlaceholder, m.MessageTypeName)
             });
-
+            
             project.ProjectRoot.Files.Add(NuGetPackagesTemplator.CreatePackagesFile(endpointConfig, dependencyMapper));
+            project.ProjectRoot.Files.Add(AppConfigTemplator.CreateAppConfig(endpointConfig));
 
             project.ProjectRoot.Folders.Add(new FolderAbstraction()
             {
@@ -231,7 +256,7 @@ namespace NServiceBus.ServiceIgnition
             project.ProjectRoot.Files.Add(new FileAbstraction()
             {
                 Name = project.ProjectName + ".csproj",
-                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(project, ProjectType.Library, dependencies)
+                Content = ProjectFileTemplator.CreateProjectFile(project, ProjectType.Exe, dependencies, isSelfHost: true)
             });
 
             return project;
@@ -270,7 +295,7 @@ namespace NServiceBus.ServiceIgnition
 
         protected string GetClassTemplate<T>()
         {
-            var type = typeof (T);
+            var type = typeof(T);
 
             var definition = ClassDefinitionTemplates.Dictionary[type.Name];
 

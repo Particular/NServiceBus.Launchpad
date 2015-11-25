@@ -73,9 +73,12 @@
         <li>Select your version number </li>
         <li>Select your specific configuration from the available items for that version </li>
         <li>Click 'Bootstrap Me' </li>
-        <li>Copy and paste the bus configuration into your project </li>
-        <li>Copy and paste the NuGet commands into your Package Manager Console </li>
+        <li>Ensure pop ups are enabled to allow download </li>
+        <li>Unzip the solution </li>
+        <li>Open in Visual Studio </li>
+        <li>Run "Update-Package -Reinstall" in the Package Manager Console </li>
     </ol>
+
 
     <div>
 
@@ -103,6 +106,28 @@
             </div>
 
             <config-section ng-show="selectedVersion" config-model="selectedVersion.TransportSection"></config-section>
+            <config-section ng-show="selectedVersion" config-model="selectedVersion.SerializerSection"></config-section>
+
+            <div ng-show="selectedVersion" class="wizard-configuration-section">
+                <div class="left-pane">
+                    Before you begin adding endpoints:
+                </div>
+                <div class="right-pane">
+                    <p>
+                        Be mindful of the difference between commands and events.
+                        Commands tell a specific logical service WHAT to do.
+                        Events come from an authoritative source to INFORM zero or many subscribers of what happened.
+                        <br/>
+                        <a href="http://docs.particular.net/nservicebus/messaging/messages-events-commands">Learn more</a>
+                    </p>
+                    <p>
+                        When you are adding messages: <br/>
+                        If you add the same message to multiple endpoints, it will be treated as an event.
+                        <br/>
+                        If you add a message to only one endpoint, it will be treated as a generic message.
+                    </p>
+                </div>
+            </div>
 
             <div class="wizard-configuration-section">
                 <button ng-show="selectedVersion"
@@ -116,21 +141,20 @@
                  ng-show="selectedVersion" 
                  ng-repeat="endpoint in endpointList">
 
-                <h3>{{endpoint.EndpointNamePlaceholder}}</h3>
+                <h3>{{endpoint.EndpointName}}</h3>
 
                 <div class="wizard-configuration-section">
                     <div class="left-pane">
                         Name your Endpoint:
                     </div>
                     <div class="right-pane">
-                        <input type="text" ng-model="endpoint.EndpointNamePlaceholder" placeholder="Endpoint Name" />
+                        <input type="text" ng-model="endpoint.EndpointName" placeholder="Endpoint Name" />
                         <div>
                             Here is some help text about naming your endpoint.
                         </div>
                     </div>
                 </div>
 
-                <config-section config-model="endpoint.SerializerSection"></config-section>
                 <config-section config-model="endpoint.PersistenceSection"></config-section>
 
                 <div class="wizard-configuration-section">
@@ -167,36 +191,6 @@
 
             <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
         </div>
-
-        <div class="step-section" ng-show="bootstrapResult">
-
-            <h2>Step 3:</h2>
-
-            <p>Copy paste the generated code into your solution. </p>
-
-            <div class="configuration-display">
-                <h4>Here is your bootstrapped configuration <span class="glyphicon glyphicon-hand-down"></span></h4>
-
-                <div class="configuration-text">
-                    <h3>Bus Configuration</h3>
-
-                    <code ng-repeat-start="line in bootstrapResult.Configuration">
-                        {{line}}
-                    </code>
-                    <br ng-if="!$last" ng-repeat-end />
-                </div>
-
-                <div class="configuration-text">
-                    <h3>NuGet Installer Commands</h3>
-
-                    <code ng-repeat-start="package in bootstrapResult.NuGetDependencies">
-                        Install-Package {{package}}
-                    </code>
-                    <br ng-if="!$last" ng-repeat-end />
-                </div>
-            </div>
-        </div>
-
     </div>
 
     @*<div class="right-pane">

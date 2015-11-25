@@ -53,6 +53,7 @@ namespace NServiceBus.ServiceIgnition.Tests
             {
                 NServiceBusVersion = NServiceBusVersion.Five,
                 Transport = Transport.Msmq,
+                Serializer = Serializer.Json,
                 EndpointConfigurations = new List<EndpointConfiguration>()
             };
 
@@ -60,12 +61,13 @@ namespace NServiceBus.ServiceIgnition.Tests
             {
                 NServiceBusVersion = configuration.NServiceBusVersion,
                 Transport = configuration.Transport,
-                Serializer = Serializer.Json,
+                Serializer = configuration.Serializer,
+                Persistence = Persistence.InMemory,
                 EndpointName = "SomeEndpoint",
                 MessageHandlers = new List<MessageHandlerConfiguration>()
                 {
                     new MessageHandlerConfiguration() {MessageTypeName = "SomeMessage"},
-                    new MessageHandlerConfiguration() {MessageTypeName = "SomeOtherMessage"},
+                    new MessageHandlerConfiguration() {MessageTypeName = "SomeEvent"},
                     new MessageHandlerConfiguration() {MessageTypeName = "BlahBlahMessage"},
                 }
             });
@@ -74,11 +76,12 @@ namespace NServiceBus.ServiceIgnition.Tests
             {
                 NServiceBusVersion = configuration.NServiceBusVersion,
                 Transport = configuration.Transport,
-                Serializer = Serializer.Json,
+                Serializer = configuration.Serializer,
+                Persistence = Persistence.InMemory,
                 EndpointName = "SomeOtherEndpoint",
                 MessageHandlers = new List<MessageHandlerConfiguration>()
                 {
-                    new MessageHandlerConfiguration() {MessageTypeName = "SomeOtherMessage"},
+                    new MessageHandlerConfiguration() {MessageTypeName = "SomeEvent"},
                 }
             });
             return configuration;

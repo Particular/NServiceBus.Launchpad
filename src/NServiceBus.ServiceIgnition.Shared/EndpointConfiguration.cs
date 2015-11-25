@@ -29,6 +29,7 @@
     public class SolutionConfiguration
     {
         public NServiceBusVersion NServiceBusVersion { get; set; }
+        public Serializer Serializer { get; set; }
         public Transport Transport { get; set; }
         public List<EndpointConfiguration> EndpointConfigurations { get; set; } 
     }

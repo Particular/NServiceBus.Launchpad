@@ -6,29 +6,6 @@ public static class ClassDefinitionTemplates
 {
     public static Dictionary<string, string> Dictionary = new Dictionary<string, string>()
     {
-        { "EndpointConfig", @"//# namespace {{endpointName}}
-//# {
-    using NServiceBus;
-    using NServiceBus.Transports;
-    using NServiceBus.Serializers;
-    using NServiceBus.Persistence;
-
-    public class EndpointConfig : IConfigureThisEndpoint
-    {
-        public void Customize(BusConfiguration configuration)
-        {
-            var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName(""{{endpointName}}"");
-            //# {{configurationDetails}}
-
-#if DEBUG
-            //Enable installers is not to be run in production environments. It is for development purposes only.
-            busConfiguration.EnableInstallers();
-#endif
-        }
-    }
-
-//# }" },
         { "EventPlaceholder", @"using NServiceBus;
 
 //# namespace Ignited.NServiceBus.Shared
@@ -70,15 +47,107 @@ public static class ClassDefinitionTemplates
         static void Main(string[] args)
         {
             var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName(""{{Ignited.NServiceBus.Console}}"");
+            busConfiguration.EndpointName(""Ignited.NServiceBus.Console"");
             //# {{configurationDetails}}
 
-            var bus = Bus.CreateSendOnly(busConfiguration);
+    #if DEBUG
+            //Enable installers is not to be run in production environments. It is for development purposes only.
+            busConfiguration.EnableInstallers();
+    #endif
 
-            //# {{busExampleCalls}}
+            using (IBus bus = Bus.Create(busConfiguration))
+            {
+                //# {{busExampleCalls}}
+
+                // TODO: Published events are not picked up, fix it
+            }
         }
     }
 //# }
 " },
+        { "ProgramService", @"//# namespace {{endpointName}}
+//# {
+
+    using System;
+    using System.ServiceProcess;
+    using NServiceBus;
+    using NServiceBus.Transports;
+    using NServiceBus.Serializers;
+    using NServiceBus.Persistence;
+
+    /// <summary>
+    /// http://docs.particular.net/nservicebus/hosting/windows-service
+    /// </summary>
+    class ProgramService : ServiceBase
+    {
+        IBus bus;
+
+        static void Main()
+        {
+            using (ProgramService service = new ProgramService())
+            {
+                if (Environment.UserInteractive)
+                {
+                    service.OnStart(null);
+
+                    Console.WriteLine(""Bus created and configured"");
+                    Console.WriteLine(""Press any key to exit"");
+                    Console.ReadKey();
+
+                    service.OnStop();
+
+                    return;
+                }
+
+                Run(service);
+            }
+        }
+
+        protected static BusConfiguration ConfigureBus()
+        {
+            var busConfiguration = new BusConfiguration();
+
+            busConfiguration.EndpointName(""{{endpointName}}"");
+
+            //# {{configurationDetails}}
+
+#if DEBUG
+            //Enable installers is not to be run in production environments. It is for development purposes only.
+            busConfiguration.EnableInstallers();
+#endif
+
+            return busConfiguration;
+        }
+
+        protected override void OnStart(string[] args)
+        {
+            var busConfiguration = ConfigureBus();
+            bus = Bus.Create(busConfiguration).Start();
+        }
+
+        protected override void OnStop()
+        {
+            if (bus != null)
+            {
+                bus.Dispose();
+            }
+        }
+    }
+
+//# }
+" },
+        { "ProvideErrorConfiguration", @"using NServiceBus.Config;
+using NServiceBus.Config.ConfigurationSource;
+
+public class ProvideErrorConfiguration : IProvideConfiguration<MessageForwardingInCaseOfFaultConfig>
+{
+    public MessageForwardingInCaseOfFaultConfig GetConfiguration()
+    {
+        return new MessageForwardingInCaseOfFaultConfig
+        {
+            ErrorQueue = ""error""
+        };
+    }
+}" },
     }; 
 }

@@ -32,16 +32,20 @@
 
             var version = $scope.selectedVersion;
             var transport = version.TransportSection.selectedItem;
+            var serializer = version.SerializerSection.selectedItem;
             var endpoints = $scope.endpointList;
 
             for (var i = 0; i < endpoints.length; i++) {
                 endpoints[i].NServiceBusVersion = version.NServiceBusVersion;
                 endpoints[i].Transport = transport.Value;
+                endpoints[i].Serializer = serializer.Value;
+                endpoints[i].Persistence = endpoints[i].PersistenceSection.selectedItem.Value;
             }
 
             var model = {
                 NServiceBusVersion: version.NServiceBusVersion,
                 Transport: transport.Value,
+                Serializer: serializer.Value,
                 EndpointConfigurations: endpoints
             };
 
@@ -73,12 +77,10 @@
 
             var version = $scope.selectedVersion;
             var persistenceSection = ng.copy(version.PersistenceSection);
-            var serializerSection = ng.copy(version.SerializerSection);
 
             var endpoint = {
                 EndpointName: defaultEndpointNameTemplate + ($scope.endpointList.length + 1),
-                SerializerSection: persistenceSection,
-                PersistenceSection: serializerSection,
+                PersistenceSection: persistenceSection,
                 MessageHandlers: []
             };
 

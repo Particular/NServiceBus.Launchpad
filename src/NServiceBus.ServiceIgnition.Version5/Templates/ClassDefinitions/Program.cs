@@ -8,12 +8,20 @@
         static void Main(string[] args)
         {
             var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName("{{Ignited.NServiceBus.Console}}");
+            busConfiguration.EndpointName("Ignited.NServiceBus.Console");
             //# {{configurationDetails}}
 
-            var bus = Bus.CreateSendOnly(busConfiguration);
+    #if DEBUG
+            //Enable installers is not to be run in production environments. It is for development purposes only.
+            busConfiguration.EnableInstallers();
+    #endif
 
-            //# {{busExampleCalls}}
+            using (IBus bus = Bus.Create(busConfiguration))
+            {
+                //# {{busExampleCalls}}
+
+                // TODO: Published events are not picked up, fix it
+            }
         }
     }
 //# }

@@ -11,24 +11,27 @@
 
             version.PersistenceSection =
                 MakeConfigurationSection(
-                    Persistence.None,
+                    Persistence.InMemory,
                     Persistence.Msmq,
                     Persistence.NHibernate,
-                    Persistence.RavenDB,
-                    Persistence.AzureStorage);
+                    Persistence.RavenDB
+                    //Persistence.AzureStorage
+                    );
 
             version.SerializerSection =
                 MakeConfigurationSection(
                     Serializer.Json,
                     Serializer.Xml,
-                    Serializer.Binary);
+                    Serializer.Binary
+                    );
 
             version.TransportSection =
                 MakeConfigurationSection(
                     Transport.Msmq,
-                    Transport.AzureServiceBus,
-                    Transport.RabbitMQ,
-                    Transport.SqlServer);
+                    //Transport.AzureServiceBus,
+                    //Transport.RabbitMQ,
+                    Transport.SqlServer
+                    );
 
             return version;
         }

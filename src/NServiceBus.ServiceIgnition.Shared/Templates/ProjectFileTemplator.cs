@@ -29,7 +29,7 @@
         public List<string> Content { get; set; }
     }
 
-    public class ClassLibraryProjectFileTemplator
+    public class ProjectFileTemplator
     {
         private static string CreateProjectReference(ProjectReferenceData data)
         {
@@ -47,13 +47,16 @@
             return Environment.NewLine + result;
         }
 
-        public static string CreateLibraryProjectFile(BootstrappedProject project, ProjectType projectType, IEnumerable<ProjectReferenceData> references = null)
+        public static string CreateProjectFile(BootstrappedProject project, ProjectType projectType, IEnumerable<ProjectReferenceData> references = null, bool isSelfHost = false)
         {
             var includes = CrawlFoldersForIncludes(project.ProjectRoot);
             var compileIncludesText = string.Join("", includes.Compile.ToArray());
 
             var contentIncludesText = "";
             var referencesText = "";
+
+            var selfHostReferences = isSelfHost ? Environment.NewLine + @"    <Reference Include=""System.ServiceProcess"" />" : "";
+            var queueConfigurationReferences = isSelfHost ? Environment.NewLine + @"    <Reference Include=""System.Configuration"" />" : "";
 
             if (references != null)
             {
@@ -73,6 +76,8 @@
                     .Replace("{{assemblyName}}", project.ProjectName)
                     .Replace("{{compileIncludes}}", compileIncludesText)
                     .Replace("{{contentIncludes}}", contentIncludesText)
+                    .Replace("{{queueConfigurationReferences}}", queueConfigurationReferences)
+                    .Replace("{{selfHostReferences}}", selfHostReferences)
                     .Replace("{{referenceIncludes}}", referencesText);
 
             return projectFileContent;
@@ -145,7 +150,7 @@
     <Reference Include=""System.Data.DataSetExtensions"" />
     <Reference Include=""Microsoft.CSharp"" />
     <Reference Include=""System.Data"" />
-    <Reference Include=""System.Xml"" />
+    <Reference Include=""System.Xml"" />{{selfHostReferences}}{{queueConfigurationReferences}}
   </ItemGroup>
   <ItemGroup>{{compileIncludes}}
   </ItemGroup>{{contentIncludes}}{{referenceIncludes}}
