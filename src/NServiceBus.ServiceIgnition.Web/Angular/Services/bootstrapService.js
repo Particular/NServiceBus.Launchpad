@@ -8,9 +8,7 @@
 
             $http.post('/Home/Bootstrap', { configuration: model })
                 .then(function success(guid) {
-
-                    window.open('/Home/SolutionZip?guid=' + guid.data, '_blank');
-                    //deferred.resolve(response.data);
+                    deferred.resolve('/Home/SolutionZip?guid=' + guid.data);
                 },
                 function failure(response) {
                     deferred.reject(response);

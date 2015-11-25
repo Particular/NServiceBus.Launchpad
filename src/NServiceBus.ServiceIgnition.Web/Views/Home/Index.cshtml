@@ -189,7 +189,14 @@
 
             <p>Generate the code... </p>
 
-            <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
+            <div class="wizard-configuration-section">
+                <div class="left-pane">
+                    <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
+                </div>
+                <div class="right-pane">
+                     <a ng-show="downloadLink" ng-href="{{downloadLink}}">Here is your download link as of {{createdDate}}</a>
+                </div>
+            </div>
         </div>
     </div>
 

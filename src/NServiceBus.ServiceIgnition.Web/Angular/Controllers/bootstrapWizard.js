@@ -51,7 +51,8 @@
 
             bootstrapService.triggerBootstrapping(model)
                 .then(function (bootstrapResult) {
-                    $scope.bootstrapResult = bootstrapResult;
+                    $scope.downloadLink = bootstrapResult;
+                    $scope.createdDate = new Date().toDateString();
                 });
         };
 
