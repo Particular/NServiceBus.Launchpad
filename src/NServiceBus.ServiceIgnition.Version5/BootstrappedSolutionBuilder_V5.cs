@@ -43,6 +43,10 @@ namespace NServiceBus.ServiceIgnition
                 projects.Add(endpointProject);
             }
 
+            var consoleApplication = GenerateConsoleProject(solutionConfig, globalDependencies);
+
+            projects.Add(consoleApplication);
+
             foreach (var project in projects)
             {
                 var projectFolder = new FolderAbstraction()
@@ -62,6 +66,63 @@ namespace NServiceBus.ServiceIgnition
             return solution;
         }
 
+        private BootstrappedProject GenerateConsoleProject(SolutionConfiguration solutionConfig, List<ProjectReferenceData> projectDependencies)
+        {
+            var consoleProject = new BootstrappedProject()
+            {
+                ProjectName = TextPlaceholder.ConsoleProjectName,
+                ProjectGuid = Guid.NewGuid()
+            };
+
+            var busConfigurations = new List<string>
+            {
+                GetMethodBody(TransportMethods.MethodsDictionary[solutionConfig.Transport]),
+            };
+
+            var uniqueMessages = GetUniqueMessages(solutionConfig);
+
+            var commandExamples =
+                uniqueMessages
+                    .Where(i => !i.IsEvent)
+                    .Select(m =>
+                        GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Send]).Replace(TextPlaceholder.MessagePlaceholder, m.MessageTypeName));
+
+            var eventExamples =
+                uniqueMessages
+                    .Where(i => i.IsEvent)
+                    .Select(m =>
+                        GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Publish]).Replace(TextPlaceholder.EventPlaceholder, m.MessageTypeName));
+
+            var messageExamples = new List<string>();
+
+            messageExamples.AddRange(commandExamples);
+            messageExamples.AddRange(eventExamples);
+
+            var programContent = GetClassTemplate<Program>();
+
+            programContent = PlaceIndentedMultiLineText(programContent, TextPlaceholder.BusConfigurationCallsPlaceholder, busConfigurations);
+            programContent = PlaceIndentedMultiLineText(programContent, TextPlaceholder.BusExampleCalls, messageExamples);
+
+            consoleProject.ProjectRoot.Files.Add(new FileAbstraction()
+            {
+                Name = "Program.cs",
+                Content = programContent
+            });
+
+            var nugetDependencies =
+                dependencyMapper.GetDependencies(solutionConfig.NServiceBusVersion, solutionConfig.Transport);
+
+            consoleProject.ProjectRoot.Files.Add(NuGetPackagesTemplator.CreatePackagesFile(nugetDependencies));
+
+            consoleProject.ProjectRoot.Files.Add(new FileAbstraction()
+            {
+                Name = consoleProject.ProjectName + ".csproj",
+                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(consoleProject, ProjectType.Exe, projectDependencies)
+            });
+
+            return consoleProject;
+        }
+
         private BootstrappedProject GenerateMessagesProject(SolutionConfiguration solutionConfig)
         {
             var messagesProject = new BootstrappedProject()
@@ -70,20 +131,24 @@ namespace NServiceBus.ServiceIgnition
                 ProjectGuid = Guid.NewGuid()
             };
 
-            var messagesToCheck = 
-                solutionConfig.EndpointConfigurations.SelectMany(e => e.MessageHandlers);
+            var uniqueMessages = GetUniqueMessages(solutionConfig);
 
-            var uniqueMessages = 
-                messagesToCheck.Select(i => i.MessageTypeName).Distinct();
-
-            var messageClasses =
-                uniqueMessages.Select(m => new FileAbstraction()
+            var commandClasses =
+                uniqueMessages.Where(m => !m.IsEvent).Select(m => new FileAbstraction()
                 {
-                    Name = m + ".cs",
-                    Content = GetClassTemplate<MessagePlaceholder>().Replace(TextPlaceholder.MessagePlaceholder, m)
+                    Name = m.MessageTypeName + ".cs",
+                    Content = GetClassTemplate<MessagePlaceholder>().Replace(TextPlaceholder.MessagePlaceholder, m.MessageTypeName)
                 });
 
-            messagesProject.ProjectRoot.Files.AddRange(messageClasses);
+            var eventClasses =
+                uniqueMessages.Where(m => m.IsEvent).Select(m => new FileAbstraction()
+                {
+                    Name = m.MessageTypeName + ".cs",
+                    Content = GetClassTemplate<EventPlaceholder>().Replace(TextPlaceholder.EventPlaceholder, m.MessageTypeName)
+                });
+
+            messagesProject.ProjectRoot.Files.AddRange(commandClasses);
+            messagesProject.ProjectRoot.Files.AddRange(eventClasses);
 
             var dependencies = 
                 dependencyMapper.GetDependencies(solutionConfig.NServiceBusVersion, solutionConfig.Transport);
@@ -93,10 +158,30 @@ namespace NServiceBus.ServiceIgnition
             messagesProject.ProjectRoot.Files.Add(new FileAbstraction()
             {
                 Name = messagesProject.ProjectName + ".csproj",
-                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(messagesProject)
+                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(messagesProject, ProjectType.Library)
             });
 
             return messagesProject;
+        }
+
+        private static List<MessageHandlerConfiguration> GetUniqueMessages(SolutionConfiguration solutionConfig)
+        {
+            var messagesToCheck =
+                solutionConfig.EndpointConfigurations.SelectMany(e => e.MessageHandlers);
+
+            var uniqueMessages = new List<MessageHandlerConfiguration>();
+
+            foreach (var message in messagesToCheck)
+            {
+                if (uniqueMessages.Any(i => i.MessageTypeName == message.MessageTypeName))
+                {
+                    continue;
+                }
+
+                uniqueMessages.Add(message);
+            }
+
+            return uniqueMessages;
         }
 
         BootstrappedProject GenerateEndpoint(EndpointConfiguration endpointConfig, List<ProjectReferenceData> dependencies)
@@ -109,6 +194,10 @@ namespace NServiceBus.ServiceIgnition
                 ProjectGuid = endpointConfig.ProjectGuid
             };
 
+            var endpointClassText =
+                endpointConfigTemplate
+                    .Replace(TextPlaceholder.EndpointNamePlaceholder, endpointConfig.EndpointName);
+
             var busConfigurations = new List<string>
             {
                 GetMethodBody(TransportMethods.MethodsDictionary[endpointConfig.Transport]),
@@ -116,18 +205,7 @@ namespace NServiceBus.ServiceIgnition
                 GetMethodBody(PersistenceMethods.MethodsDictionary[endpointConfig.Persistence])
             };
 
-            var indent = GetIndent(endpointConfigTemplate, TextPlaceholder.BusConfigurationCallsPlaceholder);
-
-            var busConfigurationsText = string.Join(Environment.NewLine, busConfigurations.ToArray());
-
-            var newLineWithSpaces = new Regex(@"\r\n *");
-
-            busConfigurationsText = newLineWithSpaces.Replace(busConfigurationsText, Environment.NewLine + indent);
-
-            var endpointClassText =
-                endpointConfigTemplate
-                    .Replace(TextPlaceholder.EndpointNamePlaceholder, endpointConfig.EndpointName)
-                    .Replace(TextPlaceholder.BusConfigurationCallsPlaceholder, busConfigurationsText);
+            endpointClassText = PlaceIndentedMultiLineText(endpointClassText, TextPlaceholder.BusConfigurationCallsPlaceholder, busConfigurations);
 
             project.ProjectRoot.Files.Add(new FileAbstraction() { Name = "EndpointConfig.cs", Content = endpointClassText });
 
@@ -153,10 +231,26 @@ namespace NServiceBus.ServiceIgnition
             project.ProjectRoot.Files.Add(new FileAbstraction()
             {
                 Name = project.ProjectName + ".csproj",
-                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(project, dependencies)
+                Content = ClassLibraryProjectFileTemplator.CreateLibraryProjectFile(project, ProjectType.Library, dependencies)
             });
 
             return project;
+        }
+
+        private static string PlaceIndentedMultiLineText(string classText, string placeholder, List<string> lines)
+        {
+            var indent = GetIndent(classText, placeholder);
+
+            var busConfigurationsText = string.Join(Environment.NewLine, lines.ToArray());
+
+            var newLineWithSpaces = new Regex(@"\r\n *");
+
+            busConfigurationsText = newLineWithSpaces.Replace(busConfigurationsText, Environment.NewLine + indent);
+
+            classText =
+                classText.Replace(placeholder, busConfigurationsText);
+
+            return classText;
         }
 
         private static string GetIndent(string classTemplate, string placeholder)
@@ -183,7 +277,7 @@ namespace NServiceBus.ServiceIgnition
             return definition.Replace("//# ", "");
         }
 
-        protected string GetMethodBody(Action<BusConfiguration> action)
+        protected string GetMethodBody(Delegate action)
         {
             var method = action.Method;
 

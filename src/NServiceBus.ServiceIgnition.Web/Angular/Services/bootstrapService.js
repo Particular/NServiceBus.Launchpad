@@ -6,9 +6,7 @@
 
             var deferred = $q.defer();
 
-            var bootstrapUrl = '/Home/Bootstrap';
-
-            $http.post(bootstrapUrl, { configuration: model })
+            $http.post('/Home/Bootstrap', { configuration: model })
                 .then(function success(guid) {
 
                     window.open('/Home/SolutionZip?guid=' + guid.data, '_blank');

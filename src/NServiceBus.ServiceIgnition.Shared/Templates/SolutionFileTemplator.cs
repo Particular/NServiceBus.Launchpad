@@ -61,7 +61,7 @@ EndProject";
             var consoleProjectGuid = Guid.NewGuid();
 
             projectIncludes.Add(CreateProjectInclude(solutionGuid, sharedProjectGuid, TextPlaceholder.SharedProjectName));
-            //projectIncludes.Add(CreateProjectInclude(solutionGuid, consoleProjectGuid, TextPlaceholder.ConsoleProjectName));
+            projectIncludes.Add(CreateProjectInclude(solutionGuid, consoleProjectGuid, TextPlaceholder.ConsoleProjectName));
 
             var projectConfigurations =
                 configuration.EndpointConfigurations
@@ -69,7 +69,7 @@ EndProject";
                     .ToList();
 
             projectConfigurations.Add(CreateProjectConfiguration(sharedProjectGuid));
-            //projectConfigurations.Add(CreateProjectConfiguration(consoleProjectGuid));
+            projectConfigurations.Add(CreateProjectConfiguration(consoleProjectGuid));
 
             var solutionFileContent =
                 SolutionFileTemplate

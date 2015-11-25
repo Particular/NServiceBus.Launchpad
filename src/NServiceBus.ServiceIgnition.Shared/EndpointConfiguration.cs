@@ -23,6 +23,7 @@
     public class MessageHandlerConfiguration
     {
         public string MessageTypeName { get; set; }
+        public bool IsEvent { get; set; }
     }
 
     public class SolutionConfiguration

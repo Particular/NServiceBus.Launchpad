@@ -273,10 +273,13 @@
   <ItemGroup>
     <Compile Include="BootstrappedSolutionBuilder_V5.cs" />
     <Compile Include="ConfigurationOptionBuilder_V5.cs" />
+    <Compile Include="Templates\ClassDefinitions\Program.cs" />
+    <Compile Include="Templates\ClassDefinitions\EventPlaceholder.cs" />
     <Compile Include="Templates\ClassDefinitions\_ClassDefinitionTemplates.cs" />
-    <Compile Include="Templates\EndpointConfiguration\PersistenceMethods.cs" />
-    <Compile Include="Templates\EndpointConfiguration\SerializerMethods.cs" />
-    <Compile Include="Templates\EndpointConfiguration\TransportMethods.cs" />
+    <Compile Include="Templates\MethodTemplates\BusMethods.cs" />
+    <Compile Include="Templates\MethodTemplates\PersistenceMethods.cs" />
+    <Compile Include="Templates\MethodTemplates\SerializerMethods.cs" />
+    <Compile Include="Templates\MethodTemplates\TransportMethods.cs" />
     <Compile Include="NugetDependencyManager_V5.cs" />
     <Compile Include="Placeholders\PersistencePlaceholder.cs" />
     <Compile Include="Placeholders\TransportPlaceholder.cs" />
@@ -285,7 +288,7 @@
     <Compile Include="Templates\ClassDefinitions\EndpointConfig.cs" />
     <Compile Include="Templates\ClassDefinitions\MessagePlaceholder.cs" />
     <Compile Include="Templates\ClassDefinitions\MessageHandler.cs" />
-    <Compile Include="Templates\EndpointConfiguration\_BusMethodTemplates.cs" />
+    <Compile Include="Templates\MethodTemplates\_BusMethodTemplates.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.ServiceIgnition.Shared\NServiceBus.ServiceIgnition.Shared.csproj">

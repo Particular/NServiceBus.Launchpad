@@ -3,6 +3,9 @@
     public static class TextPlaceholder
     {
         public static string MessagePlaceholder = "MessagePlaceholder";
+        public static string EventPlaceholder = "EventPlaceholder";
+
+        public static string BusExampleCalls = "{{busExampleCalls}}";
         public static string EndpointNamePlaceholder = "{{endpointName}}";
         public static string BusConfigurationCallsPlaceholder = "{{configurationDetails}}";
 

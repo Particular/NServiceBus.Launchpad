@@ -4,6 +4,12 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    public enum ProjectType
+    {
+        Library,
+        Exe
+    }
+
     public class ProjectReferenceData
     {
         public string QualifiedLocation { get; set; }
@@ -41,7 +47,7 @@
             return Environment.NewLine + result;
         }
 
-        public static string CreateLibraryProjectFile(BootstrappedProject project, IEnumerable<ProjectReferenceData> references = null)
+        public static string CreateLibraryProjectFile(BootstrappedProject project, ProjectType projectType, IEnumerable<ProjectReferenceData> references = null)
         {
             var includes = CrawlFoldersForIncludes(project.ProjectRoot);
             var compileIncludesText = string.Join("", includes.Compile.ToArray());
@@ -63,6 +69,7 @@
             var projectFileContent =
                 ClassLibraryProject
                     .Replace("{{projectGuid}}", project.ProjectGuid.ToString())
+                    .Replace("{{outputType}}", projectType.ToString())
                     .Replace("{{assemblyName}}", project.ProjectName)
                     .Replace("{{compileIncludes}}", compileIncludesText)
                     .Replace("{{contentIncludes}}", contentIncludesText)
@@ -107,7 +114,7 @@
     <Configuration Condition="" '$(Configuration)' == '' "">Debug</Configuration>
     <Platform Condition="" '$(Platform)' == '' "">AnyCPU</Platform>
     <ProjectGuid>{{{projectGuid}}}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>{{outputType}}</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>{{assemblyName}}</RootNamespace>
     <AssemblyName>{{assemblyName}}</AssemblyName>

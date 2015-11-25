@@ -18,7 +18,7 @@ namespace TemplateSerializer.Console
 
             var basePath = args[0];
 
-            var busConfigurationPath = basePath + @"EndpointConfiguration\";
+            var busConfigurationPath = basePath + @"MethodTemplates\";
             var classTemplatePath = basePath + @"ClassDefinitions\";
 
             SerializeBusMethods(busConfigurationPath);
@@ -79,7 +79,7 @@ namespace TemplateSerializer.Console
         {
             var className = GetClassName(csharpText);
 
-            var methodPattern = new Regex(@"public static void ([^\(]+)\(BusConfiguration busConfiguration\)[^\{]*\{([^\}]*)\}");
+            var methodPattern = new Regex(@"public static void ([^\(]+)\([^\)]*\)[^\{]*\{([^\}]*)\}");
 
             var methodCaptureGroups = methodPattern.Matches(csharpText);
 
@@ -107,15 +107,15 @@ namespace TemplateSerializer.Console
 
         private static string ReplaceFirstOccurrence(string Source, string Find, string Replace)
         {
-            int Place = Source.IndexOf(Find);
-            string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
+            var place = Source.IndexOf(Find);
+            var result = Source.Remove(place, Find.Length).Insert(place, Replace);
             return result;
         }
 
         private static string ReplaceLastOccurrence(string Source, string Find, string Replace)
         {
-            int Place = Source.LastIndexOf(Find);
-            string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
+            var place = Source.LastIndexOf(Find);
+            var result = Source.Remove(place, Find.Length).Insert(place, Replace);
             return result;
         }
 
