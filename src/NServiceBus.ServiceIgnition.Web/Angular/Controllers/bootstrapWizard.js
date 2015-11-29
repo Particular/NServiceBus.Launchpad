@@ -50,9 +50,9 @@
             };
 
             bootstrapService.triggerBootstrapping(model)
-                .then(function (bootstrapResult) {
-                    $scope.downloadLink = bootstrapResult;
-                    $scope.createdDate = new Date().toDateString();
+                .then(function (bootstrapDownloadLink) {
+                    $scope.downloadLink = bootstrapDownloadLink;
+                    $scope.createdDate = new Date().toLocaleTimeString();
                 });
         };
 
@@ -115,7 +115,9 @@
                 refreshMessages();
             };
 
-            endpoint.removeMessage = function (messageName) {
+            endpoint.removeMessage = function (message) {
+
+                var messageName = message.MessageTypeName;
 
                 if (!messageExists(messageName)) {
                     return;

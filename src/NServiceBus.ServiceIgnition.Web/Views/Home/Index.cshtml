@@ -73,7 +73,7 @@
         <li>Select your version number </li>
         <li>Select your specific configuration from the available items for that version </li>
         <li>Click 'Bootstrap Me' </li>
-        <li>Ensure pop ups are enabled to allow download </li>
+        <li>Click the link that appears for your download </li>
         <li>Unzip the solution </li>
         <li>Open in Visual Studio </li>
         <li>Run "Update-Package -Reinstall" in the Package Manager Console </li>
@@ -117,13 +117,13 @@
                         Be mindful of the difference between commands and events.
                         Commands tell a specific logical service WHAT to do.
                         Events come from an authoritative source to INFORM zero or many subscribers of what happened.
-                        <br/>
+                        <br />
                         <a href="http://docs.particular.net/nservicebus/messaging/messages-events-commands">Learn more</a>
                     </p>
                     <p>
-                        When you are adding messages: <br/>
+                        When you are adding messages: <br />
                         If you add the same message to multiple endpoints, it will be treated as an event.
-                        <br/>
+                        <br />
                         If you add a message to only one endpoint, it will be treated as a generic message.
                     </p>
                 </div>
@@ -138,7 +138,7 @@
             </div>
 
             <div class="wizard-configuration-section"
-                 ng-show="selectedVersion" 
+                 ng-show="selectedVersion"
                  ng-repeat="endpoint in endpointList">
 
                 <h3>{{endpoint.EndpointName}}</h3>
@@ -170,13 +170,16 @@
                             ng-click="endpoint.addMessage(endpoint.existingMessageToAdd)">
                         Add Existing Message
                     </button>
-                    <div>
-                        <button class="btn btn-info btn-xs"
-                                style="margin: 5px;"
-                                ng-repeat="message in endpoint.MessageHandlers"
-                                ng-click="endpoint.removeMessage(message)">
-                            {{message.MessageTypeName}} X
-                        </button>
+                    <div style="margin-top: 6px;">
+                        <span ng-repeat="message in endpoint.MessageHandlers" style="margin: 5px; padding: 5px; border: thin solid black; border-radius: 5px;">
+
+                            {{message.MessageTypeName}} {{messageDefinitions[message.MessageTypeName] > 1 ? ' (Event)' : '' }}
+
+                            <button class="btn btn-xs btn-danger"
+                                    ng-click="endpoint.removeMessage(message)">
+                                X
+                            </button>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -194,7 +197,7 @@
                     <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
                 </div>
                 <div class="right-pane">
-                     <a ng-show="downloadLink" ng-href="{{downloadLink}}">Here is your download link as of {{createdDate}}</a>
+                    <a ng-show="downloadLink" ng-href="{{downloadLink}}">Here is your download link as of {{createdDate}}</a>
                 </div>
             </div>
         </div>
