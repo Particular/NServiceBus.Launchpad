@@ -14,8 +14,8 @@
                     Persistence.InMemory,
                     Persistence.Msmq,
                     Persistence.NHibernate,
-                    Persistence.RavenDB
-                    //Persistence.AzureStorage
+                    Persistence.RavenDB,
+                    Persistence.AzureStorage
                     );
 
             version.SerializerSection =
@@ -28,8 +28,8 @@
             version.TransportSection =
                 MakeConfigurationSection(
                     Transport.Msmq,
-                    //Transport.AzureServiceBus,
-                    //Transport.RabbitMQ,
+                    Transport.AzureServiceBus,
+                    Transport.RabbitMQ,
                     Transport.SqlServer
                     );
 

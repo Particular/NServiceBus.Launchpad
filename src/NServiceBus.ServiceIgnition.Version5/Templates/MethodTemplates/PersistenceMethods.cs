@@ -24,7 +24,7 @@ namespace NServiceBus.ServiceIgnition.Version5
 
         public static void InMemory(BusConfiguration busConfiguration)
         {
-            // This is not suitable for production use
+            // This is not suitable for production use unless you don't care about losing subscriptions on restart
             busConfiguration.UsePersistence<InMemoryPersistence>();
         }
 
@@ -35,7 +35,8 @@ namespace NServiceBus.ServiceIgnition.Version5
 
         public static void NHibernate(BusConfiguration busConfiguration)
         {
-            busConfiguration.UsePersistence<NHibernatePersistence>();
+            //# throw new NotImplementedException("You need to configure your connection string");
+            busConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString("Connection_string_goes_here");
         }
 
         public static void Raven(BusConfiguration busConfiguration)

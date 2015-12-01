@@ -10,20 +10,20 @@ public static class BusMethodTemplates
         { "BusMethods.Publish", @"bus.Publish(new EventPlaceholder());" },
         { "PersistenceMethods.None", @"// Having no persistence configured is only suitable for transports which support native publish-subscribe
             // http://docs.particular.net/nservicebus/messaging/publish-subscribe/#mechanics-native-based" },
-        { "PersistenceMethods.InMemory", @"// This is not suitable for production use
+        { "PersistenceMethods.InMemory", @"// This is not suitable for production use unless you don't care about losing subscriptions on restart
             busConfiguration.UsePersistence<InMemoryPersistence>();" },
         { "PersistenceMethods.Msmq", @"busConfiguration.UsePersistence<MsmqPersistence>();" },
-        { "PersistenceMethods.NHibernate", @"busConfiguration.UsePersistence<NHibernatePersistence>();" },
+        { "PersistenceMethods.NHibernate", @"throw new NotImplementedException(""You need to configure your connection string"");
+            busConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString(""Connection_string_goes_here"");" },
         { "PersistenceMethods.Raven", @"busConfiguration.UsePersistence<RavenDBPersistence>();" },
         { "SerializerMethods.Json", @"busConfiguration.UseSerialization<JsonSerializer>();" },
         { "SerializerMethods.Xml", @"busConfiguration.UseSerialization<XmlSerializer>();" },
         { "SerializerMethods.Binary", @"busConfiguration.UseSerialization<BinarySerializer>();" },
-        { "TransportMethods.Msmq", @"// Msmq is the default transport for NServiceBus.
-            // It has been included in the core library since the first version.
+        { "TransportMethods.Msmq", @"// Msmq is the default transport for NServiceBus
+            // It has been included in the core library since the first version
             busConfiguration.UseTransport<MsmqTransport>();" },
-        { "TransportMethods.Sql", @"busConfiguration.UseTransport<SqlServerTransport>();" },
-        { "TransportMethods.Rabbit", @"busConfiguration.UseTransport<RabbitMQTransport>();" },
-        { "TransportMethods.AzureServiceBus", @"busConfiguration.UseTransport<AzureServiceBusTransport>();" },
-        { "TransportMethods.AzureStorageQueue", @"busConfiguration.UseTransport<AzureStorageQueueTransport>();" },
+        { "TransportMethods.Sql", @"busConfiguration.UseTransport<SqlServerTransport>()                .ConnectionString(() => { throw new NotImplementedException(""You need to configure your connection string"");" },
+        { "TransportMethods.Rabbit", @"busConfiguration.UseTransport<RabbitMQTransport>()                .ConnectionString(() => { throw new NotImplementedException(""You need to configure your connection string"");" },
+        { "TransportMethods.AzureServiceBus", @"busConfiguration.UseTransport<AzureServiceBusTransport>()                .ConnectionString(() => { throw new NotImplementedException(""You need to configure your connection string"");" },
     }; 
 }

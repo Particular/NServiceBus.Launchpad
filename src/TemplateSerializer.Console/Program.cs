@@ -150,7 +150,7 @@ namespace TemplateSerializer.Console
 
             var entries =
                 templateDictionary
-                    .Select(kvp => entry.Replace("{{key}}", kvp.Key).Replace("{{value}}", kvp.Value.Replace("\"", "\"\"")));
+                    .Select(kvp => entry.Replace("{{key}}", kvp.Key).Replace("{{value}}", kvp.Value.Replace("\"", "\"\"").Replace("//# ", "")));
 
             var classDefinition =
                 templateDictionaryClass

@@ -8,17 +8,17 @@ public static class ClassDefinitionTemplates
     {
         { "EventPlaceholder", @"using NServiceBus;
 
-//# namespace Ignited.NServiceBus.Shared
-//# {
+namespace Ignited.NServiceBus.Shared
+{
     public class EventPlaceholder : IEvent
     {
     }
-//# }" },
-        { "MessageHandler", @"//# namespace {{endpointName}} 
-//# {
+}" },
+        { "MessageHandler", @"namespace {{endpointName}} 
+{
     using System;
     using NServiceBus;
-    //# using Ignited.NServiceBus.Shared;
+    using Ignited.NServiceBus.Shared;
 
     public class MessageHandler : IHandleMessages<MessagePlaceholder>
     {
@@ -28,27 +28,27 @@ public static class ClassDefinitionTemplates
         }
     }
 
-//# }" },
+}" },
         { "MessagePlaceholder", @"using NServiceBus;
 
-//# namespace Ignited.NServiceBus.Shared
-//# {
+namespace Ignited.NServiceBus.Shared
+{
     public class MessagePlaceholder : IMessage
     {
     }
-//# }" },
+}" },
         { "Program", @"using NServiceBus;
-//# using Ignited.NServiceBus.Shared;
+using Ignited.NServiceBus.Shared;
 
-//# namespace Ignited.NServiceBus.Console
-//# {
+namespace Ignited.NServiceBus.Console
+{
     public class Program
     {
         static void Main(string[] args)
         {
             var busConfiguration = new BusConfiguration();
             busConfiguration.EndpointName(""Ignited.NServiceBus.Console"");
-            //# {{configurationDetails}}
+            {{configurationDetails}}
 
     #if DEBUG
             //Enable installers is not to be run in production environments. It is for development purposes only.
@@ -57,16 +57,16 @@ public static class ClassDefinitionTemplates
 
             using (IBus bus = Bus.Create(busConfiguration))
             {
-                //# {{busExampleCalls}}
+                {{busExampleCalls}}
 
                 // TODO: Published events are not picked up, fix it
             }
         }
     }
-//# }
+}
 " },
-        { "ProgramService", @"//# namespace {{endpointName}}
-//# {
+        { "ProgramService", @"namespace {{endpointName}}
+{
 
     using System;
     using System.ServiceProcess;
@@ -109,7 +109,7 @@ public static class ClassDefinitionTemplates
 
             busConfiguration.EndpointName(""{{endpointName}}"");
 
-            //# {{configurationDetails}}
+            {{configurationDetails}}
 
 #if DEBUG
             //Enable installers is not to be run in production environments. It is for development purposes only.
@@ -134,7 +134,7 @@ public static class ClassDefinitionTemplates
         }
     }
 
-//# }
+}
 " },
         { "ProvideErrorConfiguration", @"using NServiceBus.Config;
 using NServiceBus.Config.ConfigurationSource;
