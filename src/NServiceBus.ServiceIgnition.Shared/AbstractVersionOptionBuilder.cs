@@ -12,9 +12,12 @@
         protected AbstractVersionOptionBuilder()
         {
             HelpTextDictionary = new Dictionary<Type, string>();
-            HelpTextDictionary.Add(typeof(Persistence), "Here is some persistance help text");
-            HelpTextDictionary.Add(typeof(Serializer), "Here is some serializer help text");
-            HelpTextDictionary.Add(typeof(Transport), "Here is some transport help text");
+            HelpTextDictionary.Add(typeof(Persistence), 
+                "The persistence is responsible for storing and sharing subscriptions. Other responsibilities may include timeouts and sagas.");
+            HelpTextDictionary.Add(typeof(Serializer), 
+                "The serializer is responsible for the format with which your messages are sent over the wire.");
+            HelpTextDictionary.Add(typeof(Transport), 
+                "The transport is the mechanism used for sending and receiving your messages.");
         }
           
         private ConfigurationItem<T> MakeConfigurationItem<T>(T item) where T : struct, IConvertible

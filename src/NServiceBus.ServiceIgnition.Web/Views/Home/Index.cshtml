@@ -65,14 +65,15 @@
 <div ng-app="nsbBootstrap" ng-controller="bootstrapWizard" class="wizard-body">
 
     <div class="logo">
-        <h1>NServiceBus Launchpad</h1>
+        <h1>Service Ignition <sub>in Particular</sub></h1>
         <p>The place where we write the boring code for you</p>
     </div>
 
     <ol>
         <li>Select your version number </li>
         <li>Select your specific configuration from the available items for that version </li>
-        <li>Click 'Bootstrap Me' </li>
+        <li>Add endpoints and messages </li>
+        <li>Click 'Give me the download link' </li>
         <li>Click the link that appears for your download </li>
         <li>Unzip the solution </li>
         <li>Open in Visual Studio </li>
@@ -100,7 +101,9 @@
                         <option value="">--Select version--</option>
                     </select>
                     <div>
-                        Here is some help text about picking a version.
+                        Select the major version of NServiceBus to use.
+                        We will use the latest version available on NuGet.
+                        The options available are also tied to the major version.
                     </div>
                 </div>
             </div>
@@ -115,17 +118,16 @@
                 </div>
                 <div class="right-pane">
                     <p>
-                        Be mindful of the difference between commands and events.
-                        Commands tell a specific logical service WHAT to do.
-                        Events come from an authoritative source to INFORM zero or many subscribers of what happened.
-                        <br />
-                        <a href="http://docs.particular.net/nservicebus/messaging/messages-events-commands">Learn more</a>
+                        When you are adding messages: <br/>
+                        If you add the same message to multiple endpoints, it will be treated as an event.
+                        <br/>
+                        If you add a message to only one endpoint, it will be treated as a generic message.
                     </p>
                     <p>
-                        When you are adding messages: <br />
-                        If you add the same message to multiple endpoints, it will be treated as an event.
+                        Commands tell a specific logical service WHAT to do.
+                        Events come from an authoritative source to inform zero or many subscribers of what happened.
                         <br />
-                        If you add a message to only one endpoint, it will be treated as a generic message.
+                        <a href="http://docs.particular.net/nservicebus/messaging/messages-events-commands">Learn more</a>
                     </p>
                 </div>
             </div>
@@ -151,7 +153,7 @@
                     <div class="right-pane">
                         <input type="text" ng-model="endpoint.EndpointName" placeholder="Endpoint Name" />
                         <div>
-                            Here is some help text about naming your endpoint.
+                            An endpoint is a self-contained service. Name your endpoints according to the responsibility they hold.
                         </div>
                     </div>
                 </div>
@@ -193,7 +195,7 @@
 
             <div class="wizard-configuration-section">
                 <div class="left-pane">
-                    <button class="btn btn-success" ng-click="bootstrap()">Bootstrap me</button>
+                    <button class="btn btn-success" ng-click="bootstrap()">Give me the download link</button>
                 </div>
                 <div class="right-pane">
                     <a ng-show="downloadLink" ng-href="{{downloadLink}}">Here is your download link as of {{createdDate}}</a>
