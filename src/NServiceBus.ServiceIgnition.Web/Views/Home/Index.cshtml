@@ -107,6 +107,7 @@
 
             <config-section ng-show="selectedVersion" config-model="selectedVersion.TransportSection"></config-section>
             <config-section ng-show="selectedVersion" config-model="selectedVersion.SerializerSection"></config-section>
+            <config-section ng-show="selectedVersion" config-model="selectedVersion.PersistenceSection"></config-section>
 
             <div ng-show="selectedVersion" class="wizard-configuration-section">
                 <div class="left-pane">
@@ -154,8 +155,6 @@
                         </div>
                     </div>
                 </div>
-
-                <config-section config-model="endpoint.PersistenceSection"></config-section>
 
                 <div class="wizard-configuration-section">
                     <input ng-model="endpoint.currentMessageName" /> &nbsp;
