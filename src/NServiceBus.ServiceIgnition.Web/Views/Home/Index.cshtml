@@ -66,7 +66,6 @@
 
     <div class="logo">
         <h1>Service Ignition <sub>in Particular</sub></h1>
-        <p>The place where we write the boring code for you</p>
     </div>
 
     <ol>
@@ -112,33 +111,25 @@
             <config-section ng-show="selectedVersion" config-model="selectedVersion.SerializerSection"></config-section>
             <config-section ng-show="selectedVersion" config-model="selectedVersion.PersistenceSection"></config-section>
 
-            <div ng-show="selectedVersion" class="wizard-configuration-section">
-                <div class="left-pane">
-                    Before you begin adding endpoints:
-                </div>
-                <div class="right-pane">
-                    <p>
-                        When you are adding messages: <br/>
-                        If you add the same message to multiple endpoints, it will be treated as an event.
-                        <br/>
-                        If you add a message to only one endpoint, it will be treated as a generic message.
-                    </p>
-                    <p>
-                        Commands tell a specific logical service WHAT to do.
-                        Events come from an authoritative source to inform zero or many subscribers of what happened.
-                        <br />
-                        <a href="http://docs.particular.net/nservicebus/messaging/messages-events-commands">Learn more</a>
-                    </p>
-                </div>
-            </div>
-
-            <div class="wizard-configuration-section">
-                <button ng-show="selectedVersion"
-                        ng-click="addNewEndpoint()"
-                        class="btn btn-primary">
-                    Add New Endpoint
-                </button>
-            </div>
+            @*<div ng-show="selectedVersion" class="wizard-configuration-section">
+                    <div class="left-pane">
+                        Before you begin adding endpoints:
+                    </div>
+                    <div class="right-pane">
+                        <p>
+                            When you are adding messages: <br/>
+                            If you add the same message to multiple endpoints, it will be treated as an event.
+                            <br/>
+                            If you add a message to only one endpoint, it will be treated as a generic message.
+                        </p>
+                        <p>
+                            Commands tell a specific logical service WHAT to do.
+                            Events come from an authoritative source to inform zero or many subscribers of what happened.
+                            <br />
+                            <a href="http://docs.particular.net/nservicebus/messaging/messages-events-commands">Learn more</a>
+                        </p>
+                    </div>
+                </div>*@
 
             <div class="wizard-configuration-section"
                  ng-show="selectedVersion"
@@ -152,29 +143,34 @@
                     </div>
                     <div class="right-pane">
                         <input type="text" ng-model="endpoint.EndpointName" placeholder="Endpoint Name" />
-                        <div>
-                            An endpoint is a self-contained service. Name your endpoints according to the responsibility they hold.
-                        </div>
                     </div>
                 </div>
 
                 <div class="wizard-configuration-section">
                     <input ng-model="endpoint.currentMessageName" /> &nbsp;
                     <button ng-click="endpoint.addMessage(endpoint.currentMessageName)">
-                        Add New Message
+                        Subscribe to Message
                     </button>
+
                     &nbsp;
-                    <select ng-if="sharedMessages.length > 0"
-                            ng-options="message for message in sharedMessages"
-                            ng-model="endpoint.existingMessageToAdd"></select> &nbsp;
-                    <button ng-if="sharedMessages.length > 0"
-                            ng-click="endpoint.addMessage(endpoint.existingMessageToAdd)">
-                        Add Existing Message
+                    <input ng-model="endpoint.currentEventName" /> &nbsp;
+                    <button ng-click="endpoint.addEvent(endpoint.currentEventName)">
+                        Subscribe to Event
+                    </button>
+
+                    &nbsp;
+                    <select ng-if="sharedEvents.length > 0"
+                            ng-options="message for message in sharedEvents"
+                            ng-model="endpoint.existingEventToAdd"></select> &nbsp;
+
+                    <button ng-if="sharedEvents.length > 0"
+                            ng-click="endpoint.addEvent(endpoint.existingEventToAdd)">
+                        Subscribe to Existing Event
                     </button>
                     <div style="margin-top: 6px;">
                         <span ng-repeat="message in endpoint.MessageHandlers" style="margin: 5px; padding: 5px; border: thin solid black; border-radius: 5px;">
 
-                            {{message.MessageTypeName}} {{messageDefinitions[message.MessageTypeName] > 1 ? ' (Event)' : '' }}
+                            {{message.MessageTypeName}} {{messageDefinitions[message.MessageTypeName].isEvent ? ' (Event)' : '' }}
 
                             <button class="btn btn-xs btn-danger"
                                     ng-click="endpoint.removeMessage(message)">
@@ -185,9 +181,18 @@
                 </div>
             </div>
 
+            <div ng-show="selectedVersion" class="wizard-configuration-section">
+                <button ng-click="addNewEndpoint()"
+                        class="btn btn-primary">
+                    Add New Endpoint
+                </button>
+                &nbsp;
+                An endpoint is a self-contained service. Name your endpoints according to the responsibility they hold.
+            </div>
+
         </div>
 
-        <div class="step-section" ng-show="selectedVersion">
+        <div class="step-section" ng-show="selectedVersion && endpointList.length > 0">
 
             <h2>Step 2:</h2>
 

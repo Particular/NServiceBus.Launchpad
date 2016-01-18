@@ -63,16 +63,19 @@
         $scope.messageDefinitions = {
         };
 
-        $scope.sharedMessages = [];
+        $scope.sharedEvents = [];
 
-        var refreshMessages = function () {
+        var refreshEvents = function () {
             var newList = [];
             for (var key in $scope.messageDefinitions) {
-                if ($scope.messageDefinitions.hasOwnProperty(key)) {
+
+                var messageExists = $scope.messageDefinitions.hasOwnProperty(key);
+
+                if (messageExists && $scope.messageDefinitions[key].isEvent) {
                     newList.push(key);
                 }
             }
-            $scope.sharedMessages = newList;
+            $scope.sharedEvents = newList;
         };
 
         $scope.addNewEndpoint = function () {
@@ -82,10 +85,14 @@
                 MessageHandlers: []
             };
 
-            var messageExists = function(messageName) {
+            var messageIsDuplicate = function (messageName) {
 
                 for (var i = 0; i < endpoint.MessageHandlers.length; i++) {
-                    if (endpoint.MessageHandlers[i].MessageTypeName === messageName) {
+                    var message = endpoint.MessageHandlers[i];
+
+                    var nameMatches = message.MessageTypeName === messageName;
+
+                    if (nameMatches) {
                         return true;
                     }
                 }
@@ -93,30 +100,45 @@
                 return false;
             };
 
-            endpoint.addMessage = function (messageName) {
+            var isExistingNonEvent = function(messageName) {
+                var messageExists = $scope.messageDefinitions.hasOwnProperty(messageName);
+                return messageExists && !$scope.messageDefinitions[messageName].isEvent;
+            }
+
+            var addMessage = function (messageName, isEvent) {
 
                 if (!messageName
                     || messageName.length === 0
-                    || messageExists(messageName)) {
+                    || messageIsDuplicate(messageName)
+                    || isExistingNonEvent(messageName)) {
                     return;
                 }
 
-                endpoint.MessageHandlers.push({ MessageTypeName: messageName });
+                endpoint.MessageHandlers.push({ MessageTypeName: messageName, IsEvent: isEvent || false });
 
-                if ($scope.messageDefinitions[messageName] > 0) {
-                    $scope.messageDefinitions[messageName]++;
-                    return;
+                if (!$scope.messageDefinitions[messageName]) {
+                    $scope.messageDefinitions[messageName] = { isEvent: isEvent || false, count: 0 };
                 }
 
-                $scope.messageDefinitions[messageName] = 1;
-                refreshMessages();
+                $scope.messageDefinitions[messageName].count++;
+                refreshEvents();
+            };
+
+            endpoint.addMessage = function (messageName) {
+                addMessage(messageName, false);
+                endpoint.currentMessageName = '';
+            };
+
+            endpoint.addEvent = function (messageName) {
+                addMessage(messageName, true);
+                endpoint.currentEventName = '';
             };
 
             endpoint.removeMessage = function (message) {
 
                 var messageName = message.MessageTypeName;
 
-                if (!messageExists(messageName)) {
+                if (!messageIsDuplicate(messageName)) {
                     return;
                 }
 
@@ -124,17 +146,17 @@
 
                 for (var i = 0; i < endpoint.MessageHandlers.length; i++) {
                     if (endpoint.MessageHandlers[i].MessageTypeName !== messageName) {
-                        newMessageList.push(endpoint.MessageHandlers[i].MessageTypeName);
+                        newMessageList.push(endpoint.MessageHandlers[i]);
                     }
                 }
 
                 endpoint.MessageHandlers = newMessageList;
 
-                if (--$scope.messageDefinitions[messageName] < 1) {
+                if (--($scope.messageDefinitions[messageName].count) < 1) {
                     delete $scope.messageDefinitions[messageName];
                 }
 
-                refreshMessages();
+                refreshEvents();
             };
 
             $scope.endpointList.push(endpoint);
