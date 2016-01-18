@@ -4,5 +4,6 @@
     {
         Send,
         Publish,
+        Subscribe,
     }
 }
