@@ -79,7 +79,6 @@
         <li>Run "Update-Package -Reinstall" in the Package Manager Console </li>
     </ol>
 
-
     <div>
 
         <div class="step-section">
@@ -103,6 +102,30 @@
                         Select the major version of NServiceBus to use.
                         We will use the latest version available on NuGet.
                         The options available are also tied to the major version.
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="selectedVersion" class="wizard-configuration-section">
+                <div class="left-pane">
+                    Subscription style:
+                </div>
+                <div class="right-pane">
+                    <div class="btn-group">
+                        <button class="btn btn-primary"
+                                ng-class="{ 'selected': !selectedVersion.InCodeSubscriptions }"
+                                ng-click="function () { selectedVersion.InCodeSubscriptions = false; }">
+                            App.config
+                        </button>
+                        <button class="btn btn-primary"
+                                ng-class="{ 'selected': selectedVersion.InCodeSubscriptions }"
+                                ng-click="function () { selectedVersion.InCodeSubscriptions = true; }">
+                            Code
+                        </button>
+                    </div>
+                    <div>
+                        Code style subscriptions will put your subscriptions in your EndpointConfiguration in C#. 
+                        App.config style will put them in your configuration file as XML.
                     </div>
                 </div>
             </div>

@@ -8,9 +8,6 @@
                 .then(function (builderModel) {
                     $scope.builderModel = builderModel;
                 });
-
-            $scope.endpointName = 'Sample.Bootstrapper.Endpoint';
-
         };
 
         $scope.setVersionDefaults = function () {
@@ -47,7 +44,8 @@
                 NServiceBusVersion: version.NServiceBusVersion,
                 Transport: transport.Value,
                 Serializer: serializer.Value,
-                EndpointConfigurations: endpoints
+                EndpointConfigurations: endpoints,
+                InCodeSubscriptions: version.InCodeSubscriptions
             };
 
             bootstrapService.triggerBootstrapping(model)

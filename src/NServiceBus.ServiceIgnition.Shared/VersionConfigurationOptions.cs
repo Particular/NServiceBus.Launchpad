@@ -6,5 +6,6 @@
         public ConfigurationSection<Transport> TransportSection { get; set; }
         public ConfigurationSection<Persistence> PersistenceSection { get; set; }
         public ConfigurationSection<Serializer> SerializerSection { get; set; }
+        public bool InCodeSubscriptions { get; set; }
     }
 }

@@ -26,11 +26,15 @@
         {
             var mappings = new List<string>();
 
-            foreach (var endpoint in solutionConfiguration.EndpointConfigurations)
+            if (!solutionConfiguration.InCodeSubscriptions)
             {
-                foreach (var message in endpoint.MessageHandlers.Where(m => !m.IsEvent))
+                foreach (var endpoint in solutionConfiguration.EndpointConfigurations)
                 {
-                    mappings.Add(MakeMapping(TextPlaceholder.SharedProjectName, message.MessageTypeName, endpoint.EndpointName));
+                    foreach (var message in endpoint.MessageHandlers.Where(m => !m.IsEvent))
+                    {
+                        mappings.Add(MakeMapping(TextPlaceholder.SharedProjectName, message.MessageTypeName,
+                            endpoint.EndpointName));
+                    }
                 }
             }
 

@@ -18,6 +18,7 @@
         public List<MessageHandlerConfiguration> MessageHandlers { get; set; } 
 
         public Guid ProjectGuid { get; set; }
+        public bool InCodeSubscriptions { get; set; }
     }
 
     public class MessageHandlerConfiguration
@@ -32,5 +33,6 @@
         public Serializer Serializer { get; set; }
         public Transport Transport { get; set; }
         public List<EndpointConfiguration> EndpointConfigurations { get; set; } 
+        public bool InCodeSubscriptions { get; set; }
     }
 }

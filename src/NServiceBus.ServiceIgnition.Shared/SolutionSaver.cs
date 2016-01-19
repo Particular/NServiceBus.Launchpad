@@ -19,6 +19,12 @@ namespace NServiceBus.ServiceIgnition
 
         public string CreateSolution(IBuildBootstrappedSolutions bootstrapper, SolutionConfiguration configuration)
         {
+            configuration.InCodeSubscriptions = true;
+            foreach (var endpointConfiguration in configuration.EndpointConfigurations)
+            {
+                endpointConfiguration.InCodeSubscriptions = configuration.InCodeSubscriptions;
+            }
+
             var solutionData = bootstrapper.BootstrapSolution(configuration);
 
             var solutionDirectory = SavePath + Guid.NewGuid();

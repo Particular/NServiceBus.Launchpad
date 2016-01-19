@@ -16,7 +16,13 @@ public static class BusMethodTemplates
         { "PersistenceMethods.Msmq", @"busConfiguration.UsePersistence<MsmqPersistence>();" },
         { "PersistenceMethods.NHibernate", @"throw new NotImplementedException(""You need to configure your connection string"");
             busConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString(""Connection_string_goes_here"");" },
-        { "PersistenceMethods.Raven", @"busConfiguration.UsePersistence<RavenDBPersistence>();" },
+        { "PersistenceMethods.Raven", @"throw new NotImplementedException(""You need to configure your connection parameters"");
+            var connectionParameters = new NServiceBus.RavenDB.ConnectionParameters
+            {
+                Url = ""set_your_raven_url"",
+                // ApiKey = ""Set_Your_API_key"",
+                // Credentials = null, // Set your credentials,
+                // DatabaseName = ""Set_your_database_name""," },
         { "SerializerMethods.Json", @"busConfiguration.UseSerialization<JsonSerializer>();" },
         { "SerializerMethods.Xml", @"busConfiguration.UseSerialization<XmlSerializer>();" },
         { "SerializerMethods.Binary", @"busConfiguration.UseSerialization<BinarySerializer>();" },

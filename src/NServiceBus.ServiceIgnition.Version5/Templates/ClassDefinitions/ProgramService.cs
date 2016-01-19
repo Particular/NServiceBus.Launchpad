@@ -7,11 +7,12 @@
     using NServiceBus.Transports;
     using NServiceBus.Serializers;
     using NServiceBus.Persistence;
+    //# using Ignited.NServiceBus.Shared;
 
-    /// <summary>
-    /// http://docs.particular.net/nservicebus/hosting/windows-service
-    /// </summary>
-    class ProgramService : ServiceBase
+/// <summary>
+/// http://docs.particular.net/nservicebus/hosting/windows-service
+/// </summary>
+class ProgramService : ServiceBase
     {
         IBus bus;
 
@@ -43,7 +44,6 @@
             busConfiguration.EndpointName("{{endpointName}}");
 
             //# {{configurationDetails}}
-
 #if DEBUG
             //Enable installers is not to be run in production environments. It is for development purposes only.
             busConfiguration.EnableInstallers();
@@ -56,9 +56,10 @@
         {
             var busConfiguration = ConfigureBus();
             bus = Bus.Create(busConfiguration).Start();
+            //# {{codeSubscriptions}}
         }
 
-        protected override void OnStop()
+    protected override void OnStop()
         {
             if (bus != null)
             {

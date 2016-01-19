@@ -228,7 +228,19 @@ namespace NServiceBus.ServiceIgnition
                 GetMethodBody(PersistenceMethods.MethodsDictionary[endpointConfig.Persistence])
             };
 
+            var subscriptions = new List<string>();
+
+            if (endpointConfig.InCodeSubscriptions)
+            {
+                var subscribeTemplate = GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Subscribe]);
+                foreach (var messageHandler in endpointConfig.MessageHandlers)
+                {
+                    subscriptions.Add(subscribeTemplate.Replace(typeof(MessagePlaceholder).Name, messageHandler.MessageTypeName));
+                }
+            }
+
             endpointClassText = PlaceIndentedMultiLineText(endpointClassText, TextPlaceholder.BusConfigurationCallsPlaceholder, busConfigurations);
+            endpointClassText = PlaceIndentedMultiLineText(endpointClassText, TextPlaceholder.InCodeSubscriptionPlaceholder, subscriptions);
 
             project.ProjectRoot.Files.Add(new FileAbstraction() { Name = "ProgramService.cs", Content = endpointClassText });
             project.ProjectRoot.Files.Add(new FileAbstraction() { Name = "ProvideErrorConfiguration.cs", Content = GetClassTemplate<ProvideErrorConfiguration>() });

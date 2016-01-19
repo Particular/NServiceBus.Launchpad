@@ -41,7 +41,18 @@ namespace NServiceBus.ServiceIgnition.Version5
 
         public static void Raven(BusConfiguration busConfiguration)
         {
-            busConfiguration.UsePersistence<RavenDBPersistence>();
+            //# throw new NotImplementedException("You need to configure your connection parameters");
+            var connectionParameters = new NServiceBus.RavenDB.ConnectionParameters
+            {
+                Url = "set_your_raven_url",
+                // ApiKey = "Set_Your_API_key",
+                // Credentials = null, // Set your credentials,
+                // DatabaseName = "Set_your_database_name",
+            };
+
+            busConfiguration
+                .UsePersistence<RavenDBPersistence>().
+                SetDefaultDocumentStore(connectionParameters);
         }
     }
 }
