@@ -112,14 +112,14 @@
                 </div>
                 <div class="right-pane">
                     <div class="btn-group">
-                        <button class="btn btn-primary"
-                                ng-class="{ 'selected': !selectedVersion.InCodeSubscriptions }"
-                                ng-click="function () { selectedVersion.InCodeSubscriptions = false; }">
+                        <button class="btn "
+                                ng-class="{ 'btn-primary': selectedVersion.InCodeSubscriptions }"
+                                ng-click="selectedVersion.InCodeSubscriptions = false;">
                             App.config
                         </button>
-                        <button class="btn btn-primary"
-                                ng-class="{ 'selected': selectedVersion.InCodeSubscriptions }"
-                                ng-click="function () { selectedVersion.InCodeSubscriptions = true; }">
+                        <button class="btn "
+                                ng-class="{ 'btn-primary': !selectedVersion.InCodeSubscriptions }"
+                                ng-click="selectedVersion.InCodeSubscriptions = true;">
                             Code
                         </button>
                     </div>

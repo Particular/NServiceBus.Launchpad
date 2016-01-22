@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Ionic.Zip;
 
 namespace NServiceBus.ServiceIgnition
@@ -15,6 +16,14 @@ namespace NServiceBus.ServiceIgnition
         {
             SavePath = savePath;
             NuGetExe = nugetExePath;
+        }
+
+        private class NugetPackage
+        {
+            public string Name { get; set; }
+            public string Version { get; set; }
+            public List<string> DllNames { get; set; }
+            public string SolutionPackagePath { get; set; }
         }
 
         public string CreateSolution(IBuildBootstrappedSolutions bootstrapper, SolutionConfiguration configuration)
@@ -33,11 +42,13 @@ namespace NServiceBus.ServiceIgnition
 
             InstallNuGetPackages(solutionDirectory, solutionData, solutionFile, NuGetExe);
 
+            //AddReferencesToNugetPackages(solutionDirectory);
+
             var zipFilePath = solutionFile.Replace(".sln", ".zip");
 
             using (var zip = new ZipFile())
             {
-                zip.AddDirectory(solutionDirectory, "rootInZipFile");
+                zip.AddDirectory(solutionDirectory, "Solution");
                 zip.Save(zipFilePath);
             }
 
@@ -71,7 +82,7 @@ namespace NServiceBus.ServiceIgnition
             File.Copy(nugetExePath, solutionNugetExe);
 
             ExecuteSilentCommandLineProcess(solutionNugetExe, "restore " + solutionFile);
-            ExecuteSilentCommandLineProcess(solutionNugetExe, "install " + solutionFile); //This does NOTHING
+            //ExecuteSilentCommandLineProcess(solutionNugetExe, "install " + solutionFile); //This does NOTHING
 
             //var packageConfigs = CrawlAndGrabPackageConfigs(solutionFolder + @"\");
 
@@ -114,14 +125,38 @@ namespace NServiceBus.ServiceIgnition
         //}
 
 
-        const string packageReferenceTemplate = @"    <Reference Include=""NServiceBus.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL"">
-      <HintPath>..\packages\{{name}}.{{version}}\lib\net45\NServiceBus.Core.dll</HintPath>
+        const string packageReferenceTemplate = @"    <Reference Include=""{{name}}, Version={{version}}, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL"">
+      <HintPath>..\packages\{{name}}.{{version}}\lib\net45\{{dll}}</HintPath>
       <Private>True</Private>
     </Reference>";
 
         private static void AddReferencesToNugetPackages(string solutionFolder)
         {
+            var packageFolders = Directory.GetDirectories(solutionFolder + "/packages/");
+            var packages = new List<NugetPackage>();
 
+            foreach (var packageFolder in packageFolders)
+            {
+                var pattern = new Regex(@"(.+)\.(\d+\.\d+\.\d+.*)");
+
+                var captureGroups =
+                    pattern.Matches(packageFolder).GetEnumerator().Current as Match; // There can only be one
+
+                var name = captureGroups.Groups[1].Value;
+                var version = captureGroups.Groups[2].Value;
+
+                var libFolder = packageFolder + "/lib/net45/";
+
+                var dllNames = Directory.GetFiles(libFolder).Where(f => f.EndsWith(".dll")).Select(Path.GetFileNameWithoutExtension);
+
+                var package = new NugetPackage()
+                {
+                    Name = name,
+                    Version = version,
+                    DllNames = dllNames.ToList()
+                    
+                };
+            }
         }
 
         private static void ExecuteSilentCommandLineProcess(string nugetExe, string commandOptions)

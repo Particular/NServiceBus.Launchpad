@@ -46,7 +46,7 @@ namespace TemplateSerializer.Console
 
         private static string GetClassName(string csharpText)
         {
-            return Regex.Match(csharpText, @" class ([^\s]+)").Groups[1].Value;
+            return Regex.Match(csharpText, @"class ([^\s]+)").Groups[1].Value;
         }
 
         const string BusMethodClassName = "BusMethodTemplates";

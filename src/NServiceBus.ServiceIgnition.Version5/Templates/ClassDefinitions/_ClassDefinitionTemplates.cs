@@ -50,36 +50,32 @@ namespace Ignited.NServiceBus.Console
             busConfiguration.EndpointName(""Ignited.NServiceBus.Console"");
             {{configurationDetails}}
 
-    #if DEBUG
-            //Enable installers is not to be run in production environments. It is for development purposes only.
-            busConfiguration.EnableInstallers();
-    #endif
+#if DEBUG
+        //Enable installers is not to be run in production environments. It is for development purposes only.
+        busConfiguration.EnableInstallers();
+#endif
 
             using (IBus bus = Bus.Create(busConfiguration))
             {
                 {{busExampleCalls}}
-
-                // TODO: Published events are not picked up, fix it
             }
         }
     }
 }
 " },
-        { "", @"namespace {{endpointName}}
+        { "ProgramService", @"namespace {{endpointName}}
 {
 
     using System;
     using System.ServiceProcess;
     using NServiceBus;
-    using NServiceBus.Transports;
-    using NServiceBus.Serializers;
-    using NServiceBus.Persistence;
     using Ignited.NServiceBus.Shared;
 
-/// <summary>
-/// http://docs.particular.net/nservicebus/hosting/windows-service
-/// </summary>
-class ProgramService : ServiceBase
+    /// <summary>
+    /// http://docs.particular.net/nservicebus/hosting/windows-service
+    /// </summary>
+    [System.ComponentModel.DesignerCategory(""Code"")]
+    public class ProgramService : ServiceBase
     {
         IBus bus;
 
@@ -112,8 +108,8 @@ class ProgramService : ServiceBase
 
             {{configurationDetails}}
 #if DEBUG
-            //Enable installers is not to be run in production environments. It is for development purposes only.
-            busConfiguration.EnableInstallers();
+        //Enable installers is not to be run in production environments. It is for development purposes only.
+        busConfiguration.EnableInstallers();
 #endif
 
             return busConfiguration;
@@ -126,7 +122,7 @@ class ProgramService : ServiceBase
             {{codeSubscriptions}}
         }
 
-    protected override void OnStop()
+        protected override void OnStop()
         {
             if (bus != null)
             {

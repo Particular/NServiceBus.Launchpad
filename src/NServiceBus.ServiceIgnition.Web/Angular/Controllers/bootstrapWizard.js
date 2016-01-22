@@ -44,6 +44,7 @@
                 NServiceBusVersion: version.NServiceBusVersion,
                 Transport: transport.Value,
                 Serializer: serializer.Value,
+                Persistence: persistence.Value,
                 EndpointConfigurations: endpoints,
                 InCodeSubscriptions: version.InCodeSubscriptions
             };

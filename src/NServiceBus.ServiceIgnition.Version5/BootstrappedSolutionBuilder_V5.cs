@@ -80,7 +80,7 @@ namespace NServiceBus.ServiceIgnition
             {
                 GetMethodBody(TransportMethods.MethodsDictionary[solutionConfig.Transport]),
                 GetMethodBody(SerializerMethods.MethodsDictionary[solutionConfig.Serializer]),
-                GetMethodBody(PersistenceMethods.MethodsDictionary[Persistence.InMemory]),
+                GetMethodBody(PersistenceMethods.MethodsDictionary[solutionConfig.Persistence]),
             };
 
             var uniqueMessages = GetUniqueMessages(solutionConfig);
@@ -91,10 +91,16 @@ namespace NServiceBus.ServiceIgnition
                     .Select(m =>
                         GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Send]).Replace(TextPlaceholder.MessagePlaceholder, m.MessageTypeName));
 
+            var eventExamples =
+                uniqueMessages
+                    .Where(i => i.IsEvent)
+                    .Select(m =>
+                        GetMethodBody(BusMethods.MethodsDictionary[BusMethod.Publish]).Replace(TextPlaceholder.EventPlaceholder, m.MessageTypeName));
+
             var messageExamples = new List<string>();
 
             messageExamples.AddRange(commandExamples);
-            //messageExamples.AddRange(eventExamples);
+            messageExamples.AddRange(eventExamples);
 
             var programContent = GetClassTemplate<Program>();
 
