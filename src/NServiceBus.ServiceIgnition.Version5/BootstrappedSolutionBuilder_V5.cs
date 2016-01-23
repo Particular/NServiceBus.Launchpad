@@ -175,7 +175,7 @@ namespace NServiceBus.ServiceIgnition
             var messageReference = new Dictionary<string, List<MessageHandlerConfiguration>>();
 
             var messagesToCheck =
-                solutionConfig.EndpointConfigurations.SelectMany(e => e.MessageHandlers);
+                solutionConfig.EndpointConfigurations.SelectMany(e => e.MessageHandlers ?? new List<MessageHandlerConfiguration>());
 
             foreach (var message in messagesToCheck)
             {

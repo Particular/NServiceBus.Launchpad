@@ -1,16 +1,18 @@
 ﻿
 @{
-    ViewBag.Title = "NsbBootstrap";
+    ViewBag.Title = "Service Ignition";
 }
 
 <style>
     div.logo {
         padding: 15px;
-        margin: 10px;
         background-color: #bbb;
         display: inline-block;
         text-align: center;
-        border: medium solid black;
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
     }
 
     .wizard-body {
@@ -23,8 +25,15 @@
         padding: 4px;
     }
 
+    .step-section {
+        background-color: #ccf0ff;
+        padding: 6px;
+        margin-bottom: 5=8px;
+        border-radius: 5px;
+    }
+
     .wizard-configuration-section input {
-        width: 400px;
+        width: 380px;
     }
 
     .wizard-configuration-section {
@@ -36,7 +45,6 @@
     }
 
     .step-section h2 {
-        border-bottom: medium solid black;
         padding-bottom: 5px;
     }
 
@@ -52,13 +60,29 @@
     }
 
     .wizard-configuration-section div.left-pane {
-        width: 33%;
+        width: 30%;
         display: inline-block;
+        float: left;
     }
 
     .wizard-configuration-section div.right-pane {
-        width: 66%;
+        width: 69%;
         display: inline-block;
+    }
+
+    .message-button {
+        margin: 5px;
+        padding: 5px;
+        border: thin solid black;
+        border-radius: 3px;
+    }
+
+    .display-none {
+        display: none !important;
+    }
+
+    .message-box {
+        margin-top: 10px;
     }
 </style>
 
@@ -68,24 +92,11 @@
         <h1>Service Ignition <sub>in Particular</sub></h1>
     </div>
 
-    <ol>
-        <li>Select your version number </li>
-        <li>Select your specific configuration from the available items for that version </li>
-        <li>Add endpoints and messages </li>
-        <li>Click 'Give me the download link' </li>
-        <li>Click the link that appears for your download </li>
-        <li>Unzip the solution </li>
-        <li>Open in Visual Studio </li>
-        <li>Run "Update-Package -Reinstall" in the Package Manager Console </li>
-    </ol>
-
     <div>
 
         <div class="step-section">
 
-            <h2>Step 1:</h2>
-
-            <p>Fill in your configuration details. </p>
+            <h2>Step 1: Create your configuration</h2>
 
             @* Version Selection *@
             <div class="wizard-configuration-section">
@@ -106,29 +117,29 @@
                 </div>
             </div>
 
-            <div ng-show="selectedVersion" class="wizard-configuration-section">
-                <div class="left-pane">
-                    Subscription style:
-                </div>
-                <div class="right-pane">
-                    <div class="btn-group">
-                        <button class="btn "
-                                ng-class="{ 'btn-primary': selectedVersion.InCodeSubscriptions }"
-                                ng-click="selectedVersion.InCodeSubscriptions = false;">
-                            App.config
-                        </button>
-                        <button class="btn "
-                                ng-class="{ 'btn-primary': !selectedVersion.InCodeSubscriptions }"
-                                ng-click="selectedVersion.InCodeSubscriptions = true;">
-                            Code
-                        </button>
+            @*<div ng-show="selectedVersion" class="wizard-configuration-section">
+                    <div class="left-pane">
+                        Subscription style:
                     </div>
-                    <div>
-                        Code style subscriptions will put your subscriptions in your EndpointConfiguration in C#. 
-                        App.config style will put them in your configuration file as XML.
+                    <div class="right-pane">
+                        <div class="btn-group">
+                            <button class="btn "
+                                    ng-class="{ 'btn-primary': selectedVersion.InCodeSubscriptions }"
+                                    ng-click="selectedVersion.InCodeSubscriptions = false;">
+                                App.config
+                            </button>
+                            <button class="btn "
+                                    ng-class="{ 'btn-primary': !selectedVersion.InCodeSubscriptions }"
+                                    ng-click="selectedVersion.InCodeSubscriptions = true;">
+                                Code
+                            </button>
+                        </div>
+                        <div>
+                            Code style subscriptions will put your subscriptions in your EndpointConfiguration in C#.
+                            App.config style will put them in your configuration file as XML.
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div>*@
 
             <config-section ng-show="selectedVersion" config-model="selectedVersion.TransportSection"></config-section>
             <config-section ng-show="selectedVersion" config-model="selectedVersion.SerializerSection"></config-section>
@@ -165,77 +176,125 @@
                         Name your Endpoint:
                     </div>
                     <div class="right-pane">
-                        <input type="text" ng-model="endpoint.EndpointName" placeholder="Endpoint Name" />
+                        <input type="text" ng-model="endpoint.EndpointName" placeholder="Endpoint Name"/>
                     </div>
                 </div>
 
                 <div class="wizard-configuration-section">
-                    <input ng-model="endpoint.currentMessageName" /> &nbsp;
-                    <button ng-click="endpoint.addMessage(endpoint.currentMessageName)">
-                        Subscribe to Message
-                    </button>
+                    <div>
+                        <input ng-model="endpoint.currentMessageName"/> &nbsp;
+                        <button ng-click="endpoint.addMessage(endpoint.currentMessageName)" class="btn btn-info">
+                            Subscribe to Message
+                        </button>
 
-                    &nbsp;
-                    <input ng-model="endpoint.currentEventName" /> &nbsp;
-                    <button ng-click="endpoint.addEvent(endpoint.currentEventName)">
-                        Subscribe to Event
-                    </button>
+                        <div class="message-box">
+                            <b>Messages: </b>
+                            <span ng-repeat="message in endpoint.MessageHandlers"
+                                  ng-class="{ 'display-none': message.IsEvent }"
+                                  class="message-button">
 
-                    &nbsp;
-                    <select ng-if="sharedEvents.length > 0"
-                            ng-options="message for message in sharedEvents"
-                            ng-model="endpoint.existingEventToAdd"></select> &nbsp;
+                                {{message.MessageTypeName}}
 
-                    <button ng-if="sharedEvents.length > 0"
-                            ng-click="endpoint.addEvent(endpoint.existingEventToAdd)">
-                        Subscribe to Existing Event
-                    </button>
-                    <div style="margin-top: 6px;">
-                        <span ng-repeat="message in endpoint.MessageHandlers" style="margin: 5px; padding: 5px; border: thin solid black; border-radius: 5px;">
-
-                            {{message.MessageTypeName}} {{messageDefinitions[message.MessageTypeName].isEvent ? ' (Event)' : '' }}
-
-                            <button class="btn btn-xs btn-danger"
-                                    ng-click="endpoint.removeMessage(message)">
-                                X
-                            </button>
-                        </span>
+                                <button class="btn btn-xs btn-danger"
+                                        ng-click="endpoint.removeMessage(message)">
+                                    X
+                                </button>
+                            </span>
+                            <p ng-if="endpoint.MessageHandlers.length - endpoint.eventCount === 0">
+                                There are no messages configured for this endpoint.
+                            </p>
+                        </div>
                     </div>
                 </div>
+
+                <div class="wizard-configuration-section">
+                    <div>
+                        <input ng-model="endpoint.currentEventName"/> &nbsp;
+                        <button ng-click="endpoint.addEvent(endpoint.currentEventName)" class="btn btn-info">
+                            Subscribe to Event
+                        </button>
+
+                        &nbsp;
+                        <select ng-if="sharedEvents.length > 0"
+                                ng-options="message for message in sharedEvents"
+                                ng-model="endpoint.existingEventToAdd"></select> &nbsp;
+
+                        <button ng-if="sharedEvents.length > 0" class="btn btn-info"
+                                ng-click="endpoint.addEvent(endpoint.existingEventToAdd)">
+                            Subscribe to Existing Event
+                        </button>
+
+                        <div class="message-box">
+                            <b>Events: </b>
+                            <span ng-repeat="message in endpoint.MessageHandlers"
+                                  ng-class="{ 'display-none': !message.IsEvent }"
+                                  class="message-button">
+
+                                {{message.MessageTypeName}}
+
+                                <button class="btn btn-xs btn-danger"
+                                        ng-click="endpoint.removeMessage(message)">
+                                    X
+                                </button>
+                            </span>
+
+                            <p ng-if="endpoint.eventCount === 0">
+                                There are no events configured for this endpoint.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
 
             <div ng-show="selectedVersion" class="wizard-configuration-section">
-                <button ng-click="addNewEndpoint()"
-                        class="btn btn-primary">
-                    Add New Endpoint
-                </button>
-                &nbsp;
-                An endpoint is a self-contained service. Name your endpoints according to the responsibility they hold.
-            </div>
-
-        </div>
-
-        <div class="step-section" ng-show="selectedVersion && endpointList.length > 0">
-
-            <h2>Step 2:</h2>
-
-            <p>Generate the code... </p>
-
-            <div class="wizard-configuration-section">
                 <div class="left-pane">
-                    <button class="btn btn-success" ng-click="bootstrap()">Give me the download link</button>
+                    <button ng-click="addNewEndpoint()"
+                            class="btn btn-primary">
+                        Add New Endpoint
+                    </button>
                 </div>
                 <div class="right-pane">
-                    <a ng-show="downloadLink" ng-href="{{downloadLink}}">Here is your download link as of {{createdDate}}</a>
+                    <p>
+                        An endpoint is a self-contained service. Name your endpoints according to the responsibility they hold.
+                    </p>
                 </div>
             </div>
         </div>
+
+
     </div>
 
-    @*<div class="right-pane">
-            <h2>Documentation Links</h2>
-            <documentation-links attr-title="selectedSerializer.Name + 'Serializer'" attr-items="serializationDocumentation"></documentation-links>
-            <documentation-links attr-title="selectedTransport.Name + 'Transport'" attr-items="transportDocumentation"></documentation-links>
-            <documentation-links attr-title="selectedPersistence.Name + 'Persistence'" attr-items="persistenceDocumentation"></documentation-links>
-        </div>*@
+    <div class="step-section" ng-show="selectedVersion && endpointList.length > 0">
+
+        <h2>Step 2: Generate the code</h2>
+
+        <div class="wizard-configuration-section">
+            <div class="left-pane" style="float: left;">
+                <button class="btn btn-success" ng-click="bootstrap()">Give me the download link</button>
+            </div>
+
+            <div class="right-pane">
+                <span ng-if="!downloadLink">{{waitingMessage}}</span>
+
+                <a ng-show="downloadLink" ng-href="{{downloadLink}}">Here is your download link as of {{createdDate}}</a>
+
+                <ol ng-if="downloadLink">
+                    <li>Unzip the solution </li>
+                    <li>Open in Visual Studio </li>
+                    <li>Run "Update-Package -Reinstall" in the Package Manager Console </li>
+                </ol>
+            </div>
+
+
+        </div>
+    </div>
 </div>
+
+@*<div class="right-pane">
+        <h2>Documentation Links</h2>
+        <documentation-links attr-title="selectedSerializer.Name + 'Serializer'" attr-items="serializationDocumentation"></documentation-links>
+        <documentation-links attr-title="selectedTransport.Name + 'Transport'" attr-items="transportDocumentation"></documentation-links>
+        <documentation-links attr-title="selectedPersistence.Name + 'Persistence'" attr-items="persistenceDocumentation"></documentation-links>
+    </div>*@

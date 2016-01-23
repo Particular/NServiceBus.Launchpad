@@ -1,6 +1,6 @@
 (function (ng) {
 
-    var controller = function ($scope, bootstrapService, educationService) {
+    var controller = function ($scope, $timeout, bootstrapService, educationService) {
 
         var initialize = function () {
 
@@ -27,6 +27,24 @@
 
         $scope.bootstrap = function () {
 
+            $scope.waitingMessage = '';
+            var bootstrapComplete = false;
+            var updateWaitingMessage = function(callback) {
+                $scope.waitingMessage = $scope.waitingMessage + '.';
+                if (bootstrapComplete || !callback) {
+                    return;
+                }
+                callback(callback);
+            };
+
+            var beginWaiting = function() {
+                updateWaitingMessage(function() {
+                    $timeout(updateWaitingMessage, 350);
+                });
+            };
+
+            beginWaiting();
+
             var version = $scope.selectedVersion;
             var transport = version.TransportSection.selectedItem;
             var serializer = version.SerializerSection.selectedItem;
@@ -49,10 +67,16 @@
                 InCodeSubscriptions: version.InCodeSubscriptions
             };
 
+            $scope.downloadLink = null;
             bootstrapService.triggerBootstrapping(model)
                 .then(function (bootstrapDownloadLink) {
                     $scope.downloadLink = bootstrapDownloadLink;
                     $scope.createdDate = new Date().toLocaleTimeString();
+                    bootstrapComplete = true;
+                },
+                function failure() {
+                    bootstrapComplete = true;
+                    $scope.waitingMessage = 'Something failed.';
                 });
         };
 
@@ -81,7 +105,8 @@
 
             var endpoint = {
                 EndpointName: defaultEndpointNameTemplate + ($scope.endpointList.length + 1),
-                MessageHandlers: []
+                MessageHandlers: [],
+                eventCount: 0
             };
 
             var messageIsDuplicate = function (messageName) {
@@ -131,11 +156,16 @@
             endpoint.addEvent = function (messageName) {
                 addMessage(messageName, true);
                 endpoint.currentEventName = '';
+                endpoint.eventCount++;
             };
 
             endpoint.removeMessage = function (message) {
 
                 var messageName = message.MessageTypeName;
+
+                if (message.IsEvent) {
+                    endpoint.eventCount--;
+                }
 
                 if (!messageIsDuplicate(messageName)) {
                     return;
@@ -210,6 +240,6 @@
         initialize();
     };
 
-    ng.module('nsbBootstrap').controller('bootstrapWizard', ['$scope', 'bootstrapService', 'educationService', controller]);
+    ng.module('nsbBootstrap').controller('bootstrapWizard', ['$scope', '$timeout', 'bootstrapService', 'educationService', controller]);
 
 })(angular);
