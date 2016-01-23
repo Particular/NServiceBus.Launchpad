@@ -13,28 +13,28 @@
             { Transport.AzureServiceBus, AzureServiceBus},
         };
 
-        public static void Msmq(BusConfiguration busConfiguration)
+        public static void Msmq(BusConfiguration endpointConfiguration)
         {
             // Msmq is the default transport for NServiceBus
             // It has been included in the core library since the first version
-            busConfiguration.UseTransport<MsmqTransport>();
+            endpointConfiguration.UseTransport<MsmqTransport>();
         }
 
-        public static void Sql(BusConfiguration busConfiguration)
+        public static void Sql(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UseTransport<SqlServerTransport>()
+            endpointConfiguration.UseTransport<SqlServerTransport>()
                 .ConnectionString(() => { throw new NotImplementedException("You need to configure your connection string"); });
         }
 
-        public static void Rabbit(BusConfiguration busConfiguration)
+        public static void Rabbit(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UseTransport<RabbitMQTransport>()
+            endpointConfiguration.UseTransport<RabbitMQTransport>()
                 .ConnectionString(() => { throw new NotImplementedException("You need to configure your connection string"); });
         }
 
-        public static void AzureServiceBus(BusConfiguration busConfiguration)
+        public static void AzureServiceBus(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UseTransport<AzureServiceBusTransport>()
+            endpointConfiguration.UseTransport<AzureServiceBusTransport>()
                 .ConnectionString(() => { throw new NotImplementedException("You need to configure your connection string"); });
         }
     }

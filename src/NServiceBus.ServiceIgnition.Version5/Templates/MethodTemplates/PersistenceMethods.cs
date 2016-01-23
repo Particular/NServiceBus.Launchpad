@@ -16,41 +16,41 @@ namespace NServiceBus.ServiceIgnition.Version5
             { Persistence.RavenDB, Raven },
         };
 
-        public static void None(BusConfiguration busConfiguration)
+        public static void None(BusConfiguration endpointConfiguration)
         {
             // Having no persistence configured is only suitable for transports which support native publish-subscribe
             // http://docs.particular.net/nservicebus/messaging/publish-subscribe/#mechanics-native-based
         }
 
-        public static void InMemory(BusConfiguration busConfiguration)
+        public static void InMemory(BusConfiguration endpointConfiguration)
         {
-            // This is not suitable for production use unless you don't care about losing subscriptions on restart
-            busConfiguration.UsePersistence<InMemoryPersistence>();
+            // This is not suitable for production use
+            endpointConfiguration.UsePersistence<InMemoryPersistence>();
         }
 
-        public static void Msmq(BusConfiguration busConfiguration)
+        public static void Msmq(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UsePersistence<MsmqPersistence>();
+            endpointConfiguration.UsePersistence<MsmqPersistence>();
         }
 
-        public static void NHibernate(BusConfiguration busConfiguration)
+        public static void NHibernate(BusConfiguration endpointConfiguration)
         {
             //# throw new NotImplementedException("You need to configure your connection string");
-            busConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString("Connection_string_goes_here");
+            endpointConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString("Connection_string_goes_here");
         }
 
-        public static void Raven(BusConfiguration busConfiguration)
+        public static void Raven(BusConfiguration endpointConfiguration)
         {
             //# throw new NotImplementedException("You need to configure your connection parameters");
             var connectionParameters = new NServiceBus.RavenDB.ConnectionParameters
             {
-                Url = "set_your_raven_url",
+                Url = "Set_your_raven_url",
                 // ApiKey = "Set_Your_API_key",
                 // Credentials = null, // Set your credentials,
                 // DatabaseName = "Set_your_database_name",
             };
 
-            busConfiguration
+            endpointConfiguration
                 .UsePersistence<RavenDBPersistence>().
                 SetDefaultDocumentStore(connectionParameters);
         }

@@ -37,23 +37,23 @@
 
         protected static BusConfiguration ConfigureBus()
         {
-            var busConfiguration = new BusConfiguration();
+            var endpointConfiguration = new BusConfiguration();
 
-            busConfiguration.EndpointName("{{endpointName}}");
+            endpointConfiguration.EndpointName("{{endpointName}}");
 
             //# {{configurationDetails}}
 #if DEBUG
         //Enable installers is not to be run in production environments. It is for development purposes only.
-        busConfiguration.EnableInstallers();
+        endpointConfiguration.EnableInstallers();
 #endif
 
-            return busConfiguration;
+            return endpointConfiguration;
         }
 
         protected override void OnStart(string[] args)
         {
-            var busConfiguration = ConfigureBus();
-            bus = Bus.Create(busConfiguration).Start();
+            var endpointConfiguration = ConfigureBus();
+            bus = Bus.Create(endpointConfiguration).Start();
             //# {{codeSubscriptions}}
         }
 

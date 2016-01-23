@@ -12,18 +12,18 @@
             { Serializer.Binary, Binary },
         };
 
-        public static void Json(BusConfiguration busConfiguration)
+        public static void Json(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UseSerialization<JsonSerializer>();
+            endpointConfiguration.UseSerialization<JsonSerializer>();
         }
 
-        public static void Xml(BusConfiguration busConfiguration)
+        public static void Xml(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UseSerialization<XmlSerializer>();
+            endpointConfiguration.UseSerialization<XmlSerializer>();
         }
-        public static void Binary(BusConfiguration busConfiguration)
+        public static void Binary(BusConfiguration endpointConfiguration)
         {
-            busConfiguration.UseSerialization<BinarySerializer>();
+            endpointConfiguration.UseSerialization<BinarySerializer>();
         }
     }
 }

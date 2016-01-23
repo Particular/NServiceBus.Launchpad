@@ -7,16 +7,16 @@
     {
         static void Main(string[] args)
         {
-            var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName("Ignited.NServiceBus.Console");
+            var endpointConfiguration = new BusConfiguration();
+            endpointConfiguration.EndpointName("Ignited.NServiceBus.Console");
             //# {{configurationDetails}}
 
 #if DEBUG
         //Enable installers is not to be run in production environments. It is for development purposes only.
-        busConfiguration.EnableInstallers();
+        endpointConfiguration.EnableInstallers();
 #endif
 
-            using (IBus bus = Bus.Create(busConfiguration))
+            using (IBus bus = Bus.Create(endpointConfiguration))
             {
                 //# {{busExampleCalls}}
             }

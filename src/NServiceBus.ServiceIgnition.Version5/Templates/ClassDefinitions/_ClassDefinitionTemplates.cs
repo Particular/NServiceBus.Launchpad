@@ -46,16 +46,16 @@ namespace Ignited.NServiceBus.Console
     {
         static void Main(string[] args)
         {
-            var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName(""Ignited.NServiceBus.Console"");
+            var endpointConfiguration = new BusConfiguration();
+            endpointConfiguration.EndpointName(""Ignited.NServiceBus.Console"");
             {{configurationDetails}}
 
 #if DEBUG
         //Enable installers is not to be run in production environments. It is for development purposes only.
-        busConfiguration.EnableInstallers();
+        endpointConfiguration.EnableInstallers();
 #endif
 
-            using (IBus bus = Bus.Create(busConfiguration))
+            using (IBus bus = Bus.Create(endpointConfiguration))
             {
                 {{busExampleCalls}}
             }
@@ -88,8 +88,8 @@ namespace Ignited.NServiceBus.Console
                     service.OnStart(null);
 
                     Console.WriteLine(""Bus created and configured"");
-                    Console.WriteLine(""Press any key to exit"");
-                    Console.ReadKey();
+                    Console.WriteLine(""Press enter to exit"");
+                    Console.ReadLine();
 
                     service.OnStop();
 
@@ -102,23 +102,23 @@ namespace Ignited.NServiceBus.Console
 
         protected static BusConfiguration ConfigureBus()
         {
-            var busConfiguration = new BusConfiguration();
+            var endpointConfiguration = new BusConfiguration();
 
-            busConfiguration.EndpointName(""{{endpointName}}"");
+            endpointConfiguration.EndpointName(""{{endpointName}}"");
 
             {{configurationDetails}}
 #if DEBUG
         //Enable installers is not to be run in production environments. It is for development purposes only.
-        busConfiguration.EnableInstallers();
+        endpointConfiguration.EnableInstallers();
 #endif
 
-            return busConfiguration;
+            return endpointConfiguration;
         }
 
         protected override void OnStart(string[] args)
         {
-            var busConfiguration = ConfigureBus();
-            bus = Bus.Create(busConfiguration).Start();
+            var endpointConfiguration = ConfigureBus();
+            bus = Bus.Create(endpointConfiguration).Start();
             {{codeSubscriptions}}
         }
 
