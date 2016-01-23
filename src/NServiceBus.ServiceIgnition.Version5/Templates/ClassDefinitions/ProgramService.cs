@@ -23,8 +23,8 @@
                     service.OnStart(null);
 
                     Console.WriteLine("Bus created and configured");
-                    Console.WriteLine("Press any key to exit");
-                    Console.ReadKey();
+                    Console.WriteLine("Press enter to exit");
+                    Console.ReadLine();
 
                     service.OnStop();
 
